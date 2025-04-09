@@ -62,4 +62,3 @@ public class Food {
 		return TYPE == other.TYPE && Objects.equals(name, other.name)
 				&& Double.doubleToLongBits(price) == Double.doubleToLongBits(other.price);
 	}
-}

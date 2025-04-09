@@ -75,4 +75,3 @@ public class FoodData extends Food{
 		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + this.getPrice() +
 				"\nmodifications=" + modifications + "]";
 	}
-}

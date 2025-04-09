@@ -1,7 +1,6 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -87,4 +86,3 @@ class FoodTests {
 		Food food = new Food("Bread", FoodType.APPETIZER, 4.35);
 		assertEquals(food.hashCode(), hash);
 	}
-}
