@@ -53,4 +53,9 @@ public class Menu {
 		
 			//System.out.println(itemName + type + String.valueOf(price));
 	}
+	
+	public Food getFoodItem(String itemName) {
+		return menu.get(itemName);
+		
+	}
 }
