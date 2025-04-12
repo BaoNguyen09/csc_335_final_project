@@ -23,9 +23,9 @@ public class Food {
 	
 	// copy contructor for FoodData
 	public Food(Food food) {
-		this.name = food.name;
-		this.TYPE = food.TYPE;
-		this.price = food.price;
+		this.name = food.getName();
+		this.TYPE = food.getType();
+		this.price = food.getPrice();
 	}
 	
 	public String getName() {
