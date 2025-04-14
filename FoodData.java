@@ -12,7 +12,6 @@ package model;
 import java.util.Objects;
 
 public class FoodData extends Food{
-	private Food food;
 	private int quantity;
 	private String modifications;
 	
@@ -60,8 +59,7 @@ public class FoodData extends Food{
 		if (getClass() != obj.getClass())
 			return false;
 		FoodData other = (FoodData) obj;
-		return Objects.equals(food, other.food) && Objects.equals(modifications, other.modifications)
-				&& quantity == other.quantity;
+		return Objects.equals(modifications, other.modifications) && quantity == other.quantity;
 	}
 
 	@Override
