@@ -12,10 +12,15 @@ class BillTests {
 	@Test
 	void testBill1() {
 		Bill newBill = new Bill();
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
 		
-		newBill.addFoodItem("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
-		newBill.addFoodItem("Milkshake", FoodType.DRINK, 2.99, 1, "");
-		newBill.addFoodItem("Fries", FoodType.SIDE, 4.99, 1, "No Salt");
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 1, "");
+		
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 1, "No Salt");
+				
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
 		
 	
 		
@@ -36,9 +41,15 @@ class BillTests {
 	void testBill2() {
 		Bill newBill = new Bill();
 		
-		newBill.addFoodItem("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
-		newBill.addFoodItem("Milkshake", FoodType.DRINK, 2.99, 2, "");
-		newBill.addFoodItem("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
+		
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 2, "");
+		
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
 		
 		
 		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=2, price: $19.98\n"
@@ -56,10 +67,15 @@ class BillTests {
 	@Test 
 	void testBill3() {
 		Bill newBill = new Bill();
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
 		
-		newBill.addFoodItem("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
-		newBill.addFoodItem("Milkshake", FoodType.DRINK, 2.99, 2, "");
-		newBill.addFoodItem("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 2, "");
+		
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
 		
 		newBill.setTip(15.00);
 		
@@ -74,4 +90,24 @@ class BillTests {
 		
 		assertEquals(newBill.calculateBill(), 50.94);
 	}
+	
+	@Test 
+	void testCopyConstructor() {
+		Bill newBill = new Bill();
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
+		
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 2, "");
+		
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
+		
+		newBill.setTip(15.00);
+		
+		Bill copyBill = new Bill(newBill);
+		assertEquals(newBill.toString(), copyBill.toString());
+	}
 }
+
