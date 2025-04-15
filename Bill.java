@@ -20,11 +20,19 @@ public class Bill {
 		foodCost = 0;
 	}
 	
+	/* Copy constructor*/
+	public Bill(Bill other) {
+		this.foodCost = other.foodCost;
+		this.tip = other.tip;
+		ArrayList<FoodData> copyOrder = new ArrayList<>(other.order);
+		this.order = copyOrder;
+	}
+
+	
 	/* This method adds a foodItem to order, it creates a new foodItem and adds it and each time
 	 * this method runs it updates foodCost */
-	public void addFoodItem(String name, FoodType type, double price, int quantity, String mods) {
-		FoodData newItem = new FoodData(name, type, price, quantity, mods);
-		order.add(newItem);
+	public void addFoodItem(FoodData item) {
+		order.add(item);
 		calculateFoodCost();
 	}
 	
