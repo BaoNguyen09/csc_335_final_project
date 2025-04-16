@@ -15,7 +15,7 @@ public class Customer {
 		this.bill = new Bill();
 	}
 	
-	public void giveTip(double tip) {
+	public void tip(double tip) {
 		bill.setTip(tip);
 	}
 	
@@ -24,6 +24,7 @@ public class Customer {
 	}
 	
 	public void payBill() {
+		// when bill is paid the reference is set to null
 		bill = null;
 	}
 	
@@ -31,7 +32,7 @@ public class Customer {
 		return bill == null;
 	}
 	
-	public int getBillCost() {
+	public double getBillCost() {
 		return bill.calculateBill();
 	}
 	
@@ -46,5 +47,9 @@ public class Customer {
 		 */
 		FoodData food = new FoodData(name, type, price, quantity, mods);
 		bill.addFoodItem(food);
+	}
+	
+	public String toString() {
+		return "Name: " + this.name + ", " + this.bill.toString();
 	}
 }
