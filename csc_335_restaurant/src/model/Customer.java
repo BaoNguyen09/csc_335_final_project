@@ -40,13 +40,13 @@ public class Customer {
 		return name;
 	}
 	
-	public void orderFood(String name, FoodType type, double price, int quantity, String mods) {
+	public void orderFood(Food food, int quantity, String mods) {
 		/*
 		 * the customer creates a foodData object when they order food which is then passed
 		 * to the bill through this function
 		 */
-		FoodData food = new FoodData(name, type, price, quantity, mods);
-		bill.addFoodItem(food);
+		FoodData foodData = new FoodData(food.getName(), food.getType(), food.getPrice(), quantity, mods);
+		bill.addFoodItem(foodData);
 	}
 	
 	public String toString() {
