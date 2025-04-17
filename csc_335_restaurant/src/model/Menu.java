@@ -24,31 +24,31 @@ public class Menu {
 	}
 	
 	private void processMenuData() throws FileNotFoundException {
-		InputStream in = getClass().getResourceAsStream("/MenuData.txt");
-	    if (in == null) {
-	        throw new FileNotFoundException("Could not find albums.txt");
-	    }
-	
-	    try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-	        String line;
-	        while ((line = reader.readLine()) != null) {
-	            // Each line: <itemName>,<type>,<price>
-	            String[] temp = line.strip().split(",");
-	            String itemName = temp[0];
-	            String type = temp[1];
-	            
-	            // Converting the string to enum type
-	            FoodType typeVal = FoodType.valueOf(type.toUpperCase());
-	            
-	            double price = Double.parseDouble(temp[2]);
-	
-	            	
-	            // adding each item to the menu
-	            addMenuItem(itemName, typeVal, price);
-	        }
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}
+			InputStream in = getClass().getResourceAsStream("/MenuData.txt");
+			if (in == null) {
+				throw new FileNotFoundException("Could not find albums.txt");
+			}
+			
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			        // Each line: <itemName>,<type>,<price>
+			String[] temp = line.strip().split(",");
+			String itemName = temp[0];
+			String type = temp[1];
+			
+			// Converting the string to enum type
+			FoodType typeVal = FoodType.valueOf(type.toUpperCase());
+			
+			double price = Double.parseDouble(temp[2]);
+			
+				
+			// adding each item to the menu
+			        addMenuItem(itemName, typeVal, price);
+			    }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		
 	}
 	
