@@ -1,0 +1,47 @@
+Cactus Blossom,appetizer,9.49
+Fried Pickles,appetizer,8.49
+Rattlesnake Bites,appetizer,9.49
+Tater Skins,appetizer,9.99
+Grilled Shrimp,appetizer,7.99
+Boneless Buffalo Wings,appetizer,11.99
+Cheese Fries,appetizer,10.99
+Killer Ribs,appetizer,13.49
+Texas Red Chili,appetizer,4.99
+All-American Cheeseburger,entree,12.99
+Bacon Cheeseburger,entree,13.99
+Smokehouse Burger,entree,14.49
+Pulled Pork Sandwich,entree,13.49
+BBQ Chicken Sandwich,entree,13.99
+Hand-Cut Sirloin (6 oz),entree,15.49
+New York Strip (8 oz),entree,20.49
+Dallas Filet (6 oz),entree,24.99
+Ft. Worth Ribeye(12 ox),entree,26.49
+Extra Fresh-Baked Bread,side,4.99
+Baked Potato,side,3.49
+Sweet Potato,side,3.49
+Steak Fries,side,3.49
+Mashed Potatoes,side,3.49
+Buttered Corn,side,3.49
+Steamed Broccoli,side,3.49
+Steamed Vegetables,side,3.49
+Green Beans,side,3.49
+House Salad,side,4.99
+Seasoned Rice,side,3.49
+Mac & Cheese,side,4.48
+Coca-Cola,drink,1.99
+Diet Coke,drink,1.99
+Coke Zero,drink,1.99
+Sprite,drink,1.99
+Dr Pepper,drink,1.99
+Barq's Root Beer,drink,1.99
+Minute Maid Lemonade,drink,1.99
+Wild Strawberry Lemonade,drink,2.49
+Blue Crush Lemonade,drink,2.49
+Red Raspberry Lemonade,drink,2.49
+Iced Tea,drink,1.99
+Peach Iced Tea,drink,2.49
+Raspberry Iced Tea,drink,2.49
+Strawberry Iced Tea,drink,2.49
+Granny's Apple Classic,dessert,8.99
+Strawberry Cheesecake,dessert,8.99
+Big Ol' Brownie,dessert,8.99
