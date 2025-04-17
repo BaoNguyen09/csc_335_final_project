@@ -1,5 +1,7 @@
 package model;
 
+import java.util.function.BooleanSupplier;
+
 public class Table {
 		private int tableNum;
 		private int maxCapacity;
@@ -18,8 +20,28 @@ public class Table {
 			
 		}
 		
+		
 		public int getTableNum() {
 			return tableNum;
+		}
+		
+		public int getMaxCapacity() {
+			return maxCapacity;
+		}
+		
+		public boolean isOccupied() {
+			return (group == null);
+		}
+		
+		public boolean hastakenOrder() {
+			return takenOrder;
+		}
+		
+		public String getAssignedServerName() {
+			if (assignedServer != null) {
+				return assignedServer.getName();
+			}
+			return "";
 		}
 		
 		
@@ -49,7 +71,7 @@ public class Table {
 		// We assign group to a table so 
 		
 		// Returns true if the server was successfully assigned, false otherwise
-		public boolean setServer (Server server) {
+		public boolean assignServer (Server server) {
 			if (assignedServer == null) {
 				assignedServer = server;
 				return true;
@@ -77,6 +99,7 @@ public class Table {
 			isOccupied = false;
 			takenOrder = false;
 		}
+
 		
 		
 }
