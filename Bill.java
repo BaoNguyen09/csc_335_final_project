@@ -33,12 +33,21 @@ public class Bill {
 	 * this method runs it updates foodCost */
 	public void addFoodItem(FoodData item) {
 		order.add(item);
-		this.foodCost += item.getPrice();
+		calculateFoodCost();
 	}
 	
 	/* Sets the tip */ 
 	public void setTip(double money) {
 		this.tip = money;
+	}
+	
+	/* This method calculates the cost of only the food */
+	private void calculateFoodCost() {
+		double cost = 0;
+		for (FoodData item: order) {
+			cost += item.getPrice();
+		}
+		this.foodCost = cost;
 	}
 	
 	/* This method returns the price of the bill which includes the price of the food

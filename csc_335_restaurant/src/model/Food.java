@@ -21,7 +21,6 @@ public class Food {
 		this.price = price;
 	}
 	
-
 	public String getName() {
 		return this.name;
 	}
