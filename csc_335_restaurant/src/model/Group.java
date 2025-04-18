@@ -25,4 +25,30 @@ public class Group {
 		this.members = other.members;
 	}
 	
+	/* Return total amount of food and tip */
+	public double getTotalBill() {
+		double totalBill = 0;
+		for (Customer customer: members) {
+			totalBill += customer.getBillCost();
+		}
+		return totalBill;
+	}
+	
+	/* Return total tip */
+	public double getTotalTip() {
+		double totalTip = 0;
+		for (Customer customer: members) {
+			totalTip += customer.getBill().getTip();
+		}
+		return totalTip;
+	}
+	
+	public int getGroupId() {
+		return groupId;
+	}
+	
+	public int getGroupSize() {
+		return members.size();
+	}
+	
 }
