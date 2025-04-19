@@ -2,6 +2,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * The Group class is used to get information about any groups of customers
@@ -49,6 +51,12 @@ public class Group {
 	
 	public int getGroupSize() {
 		return members.size();
+	}
+	
+	public void addPerson(Customer newMember) {
+		if (!members.contains(newMember)) { // only add if new member isn't already in the group
+			members.add(newMember);
+		}
 	}
 	
 }
