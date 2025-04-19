@@ -41,6 +41,11 @@ public class Bill {
 		this.tip = money;
 	}
 	
+	/* Get the tip */
+	public double getTip() {
+		return tip;
+	}
+	
 	/* This method returns the price of the bill which includes the price of the food
 	 * plus the tip*/
 	public double calculateBill() {

@@ -6,7 +6,7 @@
 
 package model;
 
-public class Customer {
+public class Customer implements OrderFood{
 	private String name;
 	private Bill bill;
 	
