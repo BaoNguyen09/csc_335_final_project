@@ -53,6 +53,17 @@ public class Group {
 		return members.size();
 	}
 	
+	/*
+	 * Gives a read-only view of this group’s customers.
+	 * Callers can do session.orderFood(...) but can’t modify the list
+	 * nor call any other Customer methods.
+	 */
+	public List<OrderFood> getOrderSessions() {
+	  List<OrderFood> sessions = new ArrayList<>(members); // subtype polymorphism: upcasting
+	  // …then wrap it so nobody can add/remove
+	  return Collections.unmodifiableList(sessions);
+	}
+	
 	public void addPerson(Customer newMember) {
 		if (!members.contains(newMember)) { // only add if new member isn't already in the group
 			members.add(newMember);
