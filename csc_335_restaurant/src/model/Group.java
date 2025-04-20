@@ -12,12 +12,14 @@ import java.util.List;
  */
 
 public class Group {
-	private int groupId;
+	private final int groupId; // groupId can only be assigned once when a new Group instance is created
+	private static int nextGroupId = 1;
 	private ArrayList<Customer> members;
 	
 	/* The constructor method */
-	public Group(int groupId, ArrayList<Customer> customers) {
-		this.groupId = groupId;
+	public Group(ArrayList<Customer> customers) {
+		this.groupId = nextGroupId;
+		nextGroupId++;
 		this.members = customers;
 	}
 	
@@ -68,6 +70,10 @@ public class Group {
 		if (!members.contains(newMember)) { // only add if new member isn't already in the group
 			members.add(newMember);
 		}
+	}
+	
+	public static void resetGroupIdCounter() {
+	    nextGroupId = 1;
 	}
 	
 }

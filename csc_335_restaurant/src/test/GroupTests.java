@@ -24,7 +24,8 @@ class GroupTests {
     private Group group;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
+    	Group.resetGroupIdCounter(); // reset counter before each test
         burger = new Food("Burger", FoodType.ENTREE, 10.0);
         soda = new Food("Soda", FoodType.DRINK, 2.5);
 
@@ -40,29 +41,29 @@ class GroupTests {
         initialMembers.add(alice);
         initialMembers.add(bob);
 
-        group = new Group(101, initialMembers);
+        group = new Group(initialMembers);
     }
 
     @Test
-    public void testConstructorAndGetters() {
-        assertEquals(101, group.getGroupId());
+    void testConstructorAndGetters() {
+        assertEquals(1, group.getGroupId());
         assertEquals(2, group.getGroupSize());
     }
 
     @Test
-    public void testGetTotalBill() {
+    void testGetTotalBill() {
         // Alice: $10 + $2 tip, Bob: $5 + $1 tip
         double expected = 10.0 + 2.0 + 5.0 + 1.0;
         assertEquals(expected, group.getTotalBill(), 0.001); // The 0.001 is a delta, or tolerance value, used when comparing floating-point numbers
     }
 
     @Test
-    public void testGetTotalTip() {
+    void testGetTotalTip() {
         assertEquals(3.0, group.getTotalTip(), 0.001); // The 0.001 is a delta, or tolerance value, used when comparing floating-point numbers
     }
 
     @Test
-    public void testCopyConstructorSharesMembers() {
+    void testCopyConstructorSharesMembers() {
         Group copy = new Group(group);
         assertEquals(group.getGroupId(), copy.getGroupId());
         assertEquals(group.getGroupSize(), copy.getGroupSize());
@@ -72,7 +73,7 @@ class GroupTests {
     }
 
     @Test
-    public void testGetOrderSessionsIsUnmodifiable() {
+    void testGetOrderSessionsIsUnmodifiable() {
         List<OrderFood> sessions = group.getOrderSessions();
         assertEquals(2, sessions.size());
         assertTrue(sessions.get(0).getName().equals("Alice") || sessions.get(0).getName().equals("Bob"));
@@ -83,7 +84,7 @@ class GroupTests {
     }
     
     @Test
-    public void testOrderFoodThroughOrderSession() {
+    void testOrderFoodThroughOrderSession() {
         // Get Alice via OrderFood interface
         OrderFood aliceSession = group.getOrderSessions()
             .stream()
@@ -102,7 +103,7 @@ class GroupTests {
     }
 
     @Test
-    public void testAddPersonAddsNewCustomer() {
+    void testAddPersonAddsNewCustomer() {
         Customer charlie = new Customer("Charlie");
         group.addPerson(charlie);
         assertEquals(3, group.getGroupSize());
@@ -110,9 +111,16 @@ class GroupTests {
     }
 
     @Test
-    public void testAddPersonDoesNotDuplicate() {
+    void testAddPersonDoesNotDuplicate() {
         group.addPerson(alice); // already in group
         assertEquals(2, group.getGroupSize());
+    }
+    
+    @Test
+    void testGetGroupId() {
+    	assertEquals(1, group.getGroupId());
+    	Group group2 = new Group(initialMembers);
+    	assertEquals(2, group2.getGroupId());
     }
 
 }
