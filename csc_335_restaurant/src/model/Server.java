@@ -10,54 +10,46 @@ package model;
 import java.util.ArrayList;
 
 public class Server {
-	// private ArrayList<Table> tables;
+	private ArrayList<Integer> tableNums;
 	private String name;
-	private int num_seated;
 	private double tips;
 	
 	public Server(String name) {
-		//tables = new ArrayList<Table>();
+		this.tableNums = new ArrayList<Integer>();
 		this.name = name;
-		num_seated = 0;
-		tips = 0.0;
+		this.tips = 0.0;
 	}
 	
-	/*
-	public void seatTable(Tabel t) {
-		// when every table is sat num_seated is updated to add the num of seats from that table
-		tables.add(t);
-		num_seated += t.getSeats();
+	public void addTable(int tableNum) {
+		if (!tableNums.contains(tableNum)) {
+		    tableNums.add(tableNum);
+		}
 	}
 	
-	public Table popTable(Table t) {
-		// when every table is popped num_seated is updated to remove the num of seats from that table
-		num_seated -= t.getSeats();
-		return tables.remove(t);
+	public void removeTable(int tableNum) {
+		tableNums.remove(Integer.valueOf(tableNum));
 	}
-	*/
+	
+	public ArrayList<Integer> getTables() {
+		return new ArrayList<Integer>(tableNums);
+	}
+	
 	public String getName() {
 		return name;
 	}
 	
-	public void addTips(double tip) {
-		tips += tip;
-	}
-	
-	public double getTotalTips() {
+	public double getTips() {
 		return tips;
 	}
-	
-	public int getSection() {
-		// retuns all the people seated in this servers section
-		return num_seated;
+
+	public void addTips(double tips) {
+		if (tips > 0) this.tips += tips;
 	}
 	
 	@Override
 	public String toString() {
-		String str = "Server: ";
-		str += name + " has: " + num_seated;
-		str += " people sat in their section, and has made $" + tips + " in tips.\n";
+		String str = "Server: " + name;
+		str += " has made $" + tips + " in tips.\n";
 		return str;
 	}
 }
-
