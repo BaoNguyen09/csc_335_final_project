@@ -22,11 +22,13 @@ public class Server {
 	}
 	
 	public void addTable(int table) {
-		tables.add(table);
+		if (!tables.contains(table)) {
+		    tables.add(table);
+		}
 	}
 	
 	public void removeTable(int table) {
-		tables.remove(table);
+		tables.remove(Integer.valueOf(table));
 	}
 	
 	public ArrayList<Integer> getTables() {
@@ -42,7 +44,7 @@ public class Server {
 	}
 	
 	public void addTips(double tips) {
-		this.tips += tips;
+		if (tips > 0) this.tips += tips;
 	}
 	
 	@Override
