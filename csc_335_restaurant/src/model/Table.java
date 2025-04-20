@@ -1,6 +1,7 @@
 package model;
 
-import java.util.function.BooleanSupplier;
+import java.util.Collections;
+import java.util.List;
 
 public class Table {
 		private int tableNum;
@@ -30,7 +31,7 @@ public class Table {
 		}
 		
 		public boolean isOccupied() {
-			return (group == null);
+			return (group != null);
 		}
 		
 		public boolean hastakenOrder() {
@@ -41,46 +42,58 @@ public class Table {
 			if (assignedServer != null) {
 				return assignedServer.getName();
 			}
-			return "";
+			return "No Server";
 		}
 		
 		
-		public boolean takeOrder() {
-			if (!takenOrder) {
-				group.takeGroupOrder();
+		/* The following will return the orderSessions of the group ig their order
+		 * has not been taken yet else it will return null.
+		 * 
+		 * How to take orders inside the view: 
+		 * List<OrderFood> sessions = table.takeOrder();
+				for (OrderFood personSession: sessions) {
+					personSession.orderFood(Food food, int quantity, String mods);
+					
+				}
+		 */
+		public List<OrderFood> takeOrder() {
+			// Can only take order if haven't taken order before or a group is at the table
+			if (!takenOrder & group != null) {
 				takenOrder = true;
-				return true;
+				return group.getOrderSessions();
 			}
-			return false;
+			return Collections.emptyList();
 			
 		}
 		
-		public boolean closeOrder() {
-			if (takenOrder) {
-				earnings = group.getTotalBills();
-				tip = group.getTotalTip();
-				assignedServer.addTips(tip);
-				clearTable();
-				return true;
-			}
-			return false;
-			
+		public String closeOrder() {
+		    if (takenOrder) {
+		        double earnings = group.getTotalBill();
+		        double tips = group.getTotalTip();
+		        assignedServer.addTips(tips);
+		        clearTable();
+		        return "Earnings: $" + String.format("%.2f", earnings) + " Tips: $" + String.format("%.2f", tips);
+		    }
+		    return "No Order";
 		}
-		
-		// Question: do we want to assign a server to a table or to a group?
-		// We assign group to a table so 
+			
+
 		
 		// Returns true if the server was successfully assigned, false otherwise
 		public boolean assignServer (Server server) {
 			if (assignedServer == null) {
 				assignedServer = server;
+				assignedServer.addTable(tableNum);
 				return true;
 			}
 			return false;
 		}
 		
 		public void removeServer() {
-			assignedServer = null;
+			if (assignedServer != null) {
+				assignedServer.removeTable(tableNum);
+				assignedServer = null;
+			}
 		}
 		
 		// Returns true if the group was successfully assigned, false otherwise
