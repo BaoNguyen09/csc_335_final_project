@@ -8,31 +8,30 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Server {
-	private ArrayList<Integer> tables;
+	private ArrayList<Integer> tableNums;
 	private String name;
 	private double tips;
 	
 	public Server(String name) {
-		this.tables = new ArrayList<Integer>();
+		this.tableNums = new ArrayList<Integer>();
 		this.name = name;
 		this.tips = 0.0;
 	}
 	
 	public void addTable(int table) {
-		if (!tables.contains(table)) {
-		    tables.add(table);
+		if (!tableNums.contains(table)) {
+		    tableNums.add(table);
 		}
 	}
 	
 	public void removeTable(int table) {
-		tables.remove(Integer.valueOf(table));
+		tableNums.remove(Integer.valueOf(table));
 	}
 	
 	public ArrayList<Integer> getTables() {
-		return new ArrayList<Integer>(tables);
+		return new ArrayList<Integer>(tableNums);
 	}
 	
 	public String getName() {
@@ -42,7 +41,7 @@ public class Server {
 	public double getTips() {
 		return tips;
 	}
-	
+
 	public void addTips(double tips) {
 		if (tips > 0) this.tips += tips;
 	}
