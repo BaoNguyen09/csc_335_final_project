@@ -8,56 +8,47 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Server {
-	// private ArrayList<Table> tables;
+	private ArrayList<Integer> tables;
 	private String name;
-	private int num_seated;
 	private double tips;
 	
 	public Server(String name) {
-		//tables = new ArrayList<Table>();
+		this.tables = new ArrayList<Integer>();
 		this.name = name;
-		num_seated = 0;
-		tips = 0.0;
+		this.tips = 0.0;
 	}
 	
-	/*
-	public void seatTable(Tabel t) {
-		// when every table is sat num_seated is updated to add the num of seats from that table
-		tables.add(t);
-		num_seated += t.getSeats();
+	public void addTable(int table) {
+		tables.add(table);
 	}
 	
-	public Table popTable(Table t) {
-		// when every table is popped num_seated is updated to remove the num of seats from that table
-		num_seated -= t.getSeats();
-		return tables.remove(t);
+	public void removeTable(int table) {
+		tables.remove(table);
 	}
-	*/
+	
+	public ArrayList<Integer> getTables() {
+		return new ArrayList<Integer>(tables);
+	}
+	
 	public String getName() {
 		return name;
 	}
 	
-	public void addTips(double tip) {
-		tips += tip;
-	}
-	
-	public double getTotalTips() {
+	public double getTips() {
 		return tips;
 	}
 	
-	public int getSection() {
-		// retuns all the people seated in this servers section
-		return num_seated;
+	public void addTips(double tips) {
+		this.tips += tips;
 	}
 	
 	@Override
 	public String toString() {
-		String str = "Server: ";
-		str += name + " has: " + num_seated;
-		str += " people sat in their section, and has made $" + tips + " in tips.\n";
+		String str = "Server: " + name;
+		str += " has made $" + tips + " in tips.\n";
 		return str;
 	}
 }
-
