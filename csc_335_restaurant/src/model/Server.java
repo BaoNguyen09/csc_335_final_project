@@ -27,7 +27,9 @@ public class Server {
 	}
 	
 	public void removeTable(int tableNum) {
-		tableNums.remove(Integer.valueOf(tableNum));
+		if (tableNums.contains(tableNum)) {
+			tableNums.remove(Integer.valueOf(tableNum));
+		}
 	}
 	
 	public ArrayList<Integer> getTables() {
