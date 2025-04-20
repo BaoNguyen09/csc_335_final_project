@@ -20,9 +20,9 @@ public class Server {
 		this.tips = 0.0;
 	}
 	
-	public void addTable(int table) {
-		if (!tableNums.contains(table)) {
-		    tableNums.add(table);
+	public void addTable(int tableNum) {
+		if (!tableNums.contains(tableNum)) {
+		    tableNums.add(tableNum);
 		}
 	}
 	
