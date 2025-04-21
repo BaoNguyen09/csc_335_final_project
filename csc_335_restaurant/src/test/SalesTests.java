@@ -113,14 +113,14 @@ class SalesTests {
 	}
 	
 	@Test
-	void testSortMethods() {
-Bill newBill = new Bill();
+	void testSortMostSales() {
+		Bill newBill = new Bill();
 		
 		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
 		
 		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 1, "");
 		
-		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 1, "No Salt");
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
 		
 		FoodData twoHamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 4, "No Tomatoes");
 		
@@ -149,14 +149,70 @@ Bill newBill = new Bill();
 		trackSales.addCompletedOrder(newBill);
 		trackSales.addCompletedOrder(newBill2);
 		
-		assertEquals(trackSales.sortMostSales(), "Items with Most Sales: \n"
-				+ "Hamburger 10\n"
-				+ "Milkshake 2\n"
-				+ "Fries 2\n");
-		assertEquals(trackSales.sortOffRevenue(), "Money Made: \n"
-				+ "Hamburger $99.9\n"
-				+ "Fries $9.98\n"
-				+ "Milkshake $5.98\n");
+		ArrayList<FoodData> mostSales = new ArrayList<>();
+		FoodData copyHamburger = new FoodData(hamburger);
+		copyHamburger.setQuantity(10);
+
+		FoodData copyMilkshake = new FoodData(milkshake);
+		copyMilkshake.setQuantity(2);
 		
+		FoodData copyFries = new FoodData(fries);
+		copyFries.setQuantity(3);
+		
+		mostSales.add(copyMilkshake);
+		mostSales.add(copyFries);
+		mostSales.add(copyHamburger);
+		
+		
+		assertEquals(trackSales.sortMostSales(), mostSales);
+		
+		
+	}
+	
+	@Test
+	void testSortOffRevenue() {
+Bill newBill = new Bill();
+	
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 1, "");
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 1, "No Salt");
+		FoodData twoHamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 4, "No Tomatoes");
+		
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
+		newBill.addFoodItem(twoHamburger);
+		
+		Bill newBill2 = new Bill();
+		
+		FoodData hamburger2 = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
+		FoodData milkshake2 = new FoodData("Milkshake", FoodType.DRINK, 2.99, 50, "");
+		FoodData fries2 = new FoodData("Fries", FoodType.SIDE, 4.99, 1, "No Salt");
+		
+		newBill2.addFoodItem(hamburger2);
+		newBill2.addFoodItem(milkshake2);
+		newBill2.addFoodItem(fries2);
+		
+		
+		Sales trackSales = new Sales();
+		
+		trackSales.addCompletedOrder(newBill);
+		trackSales.addCompletedOrder(newBill2);
+		
+		ArrayList<FoodData> mostRev = new ArrayList<>();
+		FoodData copyHamburger = new FoodData(hamburger);
+		copyHamburger.setQuantity(6);
+
+		FoodData copyMilkshake = new FoodData(milkshake);
+		copyMilkshake.setQuantity(51);
+		
+		FoodData copyFries = new FoodData(fries);
+		copyFries.setQuantity(2);
+		
+		mostRev.add(copyFries);
+		mostRev.add(copyHamburger);
+		mostRev.add(copyMilkshake);
+		
+		assertEquals(trackSales.sortOffRevenue(), mostRev);
 	}
 }
