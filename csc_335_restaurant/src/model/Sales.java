@@ -22,7 +22,7 @@ public class Sales {
 	}
 	
 	
-	/* This method adds all the food in bill to the hashmap by checking the food name
+	/* This method adds all the food in bill to the hashmap by checking the FoodData
 	 * and adding the quantity
 	 *  */
 	public void addCompletedOrder(Bill bill) {
