@@ -15,7 +15,6 @@ public class Table {
 			this.tableNum = tableNum;
 			this.maxCapacity = maxCapacity;
 			group = null;
-			isOccupied = false;
 			assignedServer = null;
 			takenOrder = false;
 			
