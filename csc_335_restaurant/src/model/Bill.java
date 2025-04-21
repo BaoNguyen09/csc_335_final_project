@@ -48,11 +48,6 @@ public class Bill {
 			cost += item.getPrice();
 		}
 		this.foodCost = cost;
-
-	/* Get the tip */
-	public double getTip() {
-		return tip;
-
 	}
 	
 	/* This method returns the price of the bill which includes the price of the food
@@ -62,10 +57,7 @@ public class Bill {
 	}
 	
 	public ArrayList<FoodData> getOrder(){
-		ArrayList<FoodData> copyOrder = new ArrayList<>();
-                for (FoodData fd : this.order) {
-                    copyOrder.add(new FoodData(fd));  // new instance each time
-                }
+		ArrayList<FoodData> copyOrder = new ArrayList<>(this.order);
 		return copyOrder;
 	}
 	

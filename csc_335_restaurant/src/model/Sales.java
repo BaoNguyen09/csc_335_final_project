@@ -8,10 +8,8 @@ import java.util.*;
 
 
 public class Sales {
-	/* I made sales HashMap String, Integer instead of food, integer because changing
-	 * using food as the key would require changing the hashcode, and equals method
-	 * in FoodData so contains is able to work. Possible to change if we absolutely need to though.
-	 * */
+	/* The sales HashMap keeps track of how many of each item is sold
+	 * The itemRevenue HashMap keeps track of how many of each item is sold */
 	private HashMap<FoodData, Integer> sales;
 	private HashMap<FoodData, Double> itemRevenue;
 	
@@ -22,7 +20,7 @@ public class Sales {
 	}
 	
 	
-	/* This method adds all the food in bill to the hashmap by checking the FoodData
+	/* This method adds all the food in bill to the hashmap by checking the food name
 	 * and adding the quantity
 	 *  */
 	public void addCompletedOrder(Bill bill) {
@@ -38,21 +36,27 @@ public class Sales {
 	
 	// getter method for sales hashmap
 	public HashMap<FoodData, Integer> getSales(){
-		HashMap<FoodData, Integer> copySales = new HashMap<>(this.sales);
+		HashMap<FoodData, Integer> copySales = new HashMap<>();
+		for (FoodData item : sales.keySet()) {
+			FoodData copyItem = new FoodData(item);
+			copySales.put(copyItem, sales.get(item));
+		}
 		return copySales;
 	}
 	
 	/* This method is sorted based off the most Sales */
-	public String  sortMostSales(){
+	public ArrayList<FoodData>  sortMostSales(){
 		ArrayList<FoodData> mostSales = new ArrayList<>(sales.keySet());
 		// this code sorts the arrayList by comparing the key based on the value in the
-		// sales hashMap. comparing o2 to o1 makes the list descending order instead of ascending
-		Collections.sort(mostSales, (o1,o2) -> sales.get(o2).compareTo(sales.get(o1)));
-		String result = "Items with Most Sales: \n";
+		// sales hashMap.
+		Collections.sort(mostSales, (o1,o2) -> sales.get(o1).compareTo(sales.get(o2)));
+		ArrayList<FoodData> returnList = new ArrayList<>();
 		for (FoodData item: mostSales) {
-			result += item.getName() + " " + sales.get(item) + "\n";
+			FoodData copyItem = new FoodData(item);
+			copyItem.setQuantity(sales.get(item));
+			returnList.add(copyItem);
 		}
-		return result;
+		return returnList;
 	}
 	
 	/* This method is a helper method that updates the itemRevenue hashmap everytime
@@ -67,16 +71,18 @@ public class Sales {
 	
 	/* This method will sort the items based on how much money has been made off each
 	 * (most money to least) */
-	public String sortOffRevenue(){
-		String result = "Money Made: \n";
+	public ArrayList<FoodData> sortOffRevenue(){
 		// ArrayList full of the keys in itemRevenue
 		ArrayList<FoodData> sortRevenue = new ArrayList<>(itemRevenue.keySet());
-		// sorts items based off the total revenue they have made in descending order
-		Collections.sort(sortRevenue, (o1, o2) -> itemRevenue.get(o2).compareTo(itemRevenue.get(o1)));
+		// sorts items based off the total revenue they have made in ascending order
+		Collections.sort(sortRevenue, (o1, o2) -> itemRevenue.get(o1).compareTo(itemRevenue.get(o2)));
+		ArrayList<FoodData> copyList = new ArrayList<>();
 		for (FoodData item: sortRevenue) {
-			result += item.getName() + " $" + itemRevenue.get(item) + "\n";
+			FoodData copyItem = new FoodData(item);
+			copyItem.setQuantity(sales.get(item));
+			copyList.add(copyItem);
 		}
-		return result;
+		return copyList;
 	}
 	
 	@Override 
