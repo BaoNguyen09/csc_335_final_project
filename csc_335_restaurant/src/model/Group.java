@@ -1,4 +1,3 @@
-
 package model;
 
 import java.util.ArrayList;
@@ -17,10 +16,10 @@ public class Group {
 	private ArrayList<Customer> members;
 	
 	/* The constructor method */
-	public Group(ArrayList<Customer> customers) {
+	public Group() {
 		this.groupId = nextGroupId;
 		nextGroupId++;
-		this.members = customers;
+		this.members = new ArrayList<Customer>();
 	}
 	
 	/* Copy constructor*/
@@ -75,5 +74,5 @@ public class Group {
 	public static void resetGroupIdCounter() {
 	    nextGroupId = 1;
 	}
-	
+
 }

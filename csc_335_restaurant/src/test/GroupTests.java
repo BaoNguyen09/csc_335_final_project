@@ -37,11 +37,9 @@ class GroupTests {
         bob.orderFood(soda, 2, "no ice");
         bob.tip(1.0);
 
-        initialMembers = new ArrayList<>();
-        initialMembers.add(alice);
-        initialMembers.add(bob);
-
-        group = new Group(initialMembers);
+        group = new Group();
+        group.addPerson(alice);
+        group.addPerson(bob);
     }
 
     @Test
@@ -119,7 +117,9 @@ class GroupTests {
     @Test
     void testGetGroupId() {
     	assertEquals(1, group.getGroupId());
-    	Group group2 = new Group(initialMembers);
+    	Group group2 = new Group();
+    	group2.addPerson(alice);
+    	group2.addPerson(bob);
     	assertEquals(2, group2.getGroupId());
     }
 
