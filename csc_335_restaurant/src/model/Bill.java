@@ -48,6 +48,11 @@ public class Bill {
 			cost += item.getPrice();
 		}
 		this.foodCost = cost;
+
+	/* Get the tip */
+	public double getTip() {
+		return tip;
+
 	}
 	
 	/* This method returns the price of the bill which includes the price of the food
