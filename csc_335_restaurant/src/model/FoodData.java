@@ -20,6 +20,13 @@ public class FoodData extends Food{
 		this.quantity = quantity;
 		this.modifications = modifications;
 	}
+	
+	//copy constructor for FoodData
+	public FoodData(FoodData food) {
+		super(food.getName(), food.getType(), food.getPrice());
+		this.quantity = food.getQuantity();
+		this.modifications = food.getModifications();
+	}
 
 	public int getQuantity() {
 		return this.quantity;
