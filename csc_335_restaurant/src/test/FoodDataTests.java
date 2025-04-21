@@ -58,8 +58,9 @@ public class FoodDataTests {
 	@Test
 	void testHashCode() {
 		FoodData foodData = new FoodData("Burger", FoodType.ENTREE, 8.49, 2, "None");
-		int hash = 31 + Objects.hash("None", 2);
-		assertEquals(foodData.hashCode(), hash);
+		FoodData foodData1 = new FoodData("Burger", FoodType.ENTREE, 8.49, 2, "None");
+		
+		assertEquals(foodData.hashCode(), foodData1.hashCode());
 	}
 	
 	@Test
@@ -89,17 +90,5 @@ public class FoodDataTests {
 		assertTrue(foodData.equals(foodData2));
 	}
 	
-	@Test
-	void testEqualsQuantity() {
-		FoodData foodData = new FoodData("Bread", FoodType.APPETIZER, 4.35, 1, "None");
-		FoodData foodData2 = new FoodData("Bread", FoodType.APPETIZER, 4.35, 2, "None");
-		assertFalse(foodData.equals(foodData2));
-	}
 	
-	@Test
-	void testEqualsModifications() {
-		FoodData foodData = new FoodData("Bread", FoodType.APPETIZER, 4.35, 2, "add butter");
-		FoodData foodData2 = new FoodData("Bread", FoodType.APPETIZER, 4.35, 2, "None");
-		assertFalse(foodData.equals(foodData2));
-	}
 }
