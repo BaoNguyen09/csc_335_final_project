@@ -20,23 +20,24 @@ public class FoodData extends Food{
 		this.quantity = quantity;
 		this.modifications = modifications;
 	}
-	
+
 	public int getQuantity() {
 		return this.quantity;
 	}
-	
+
 	public String getModifications() {
 		return this.modifications;
 	}
-	
+
+
 	public void setQuantity(int q) {
 		this.quantity = q;
 	}
-	
+
 	public void setModifications(String m) {
 		this.modifications = m;
 	}
-	
+
 	// need to override getPrice 
 	@Override
 	public double getPrice() {
@@ -45,21 +46,12 @@ public class FoodData extends Food{
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = prime + Objects.hash(modifications, quantity);
-		return result;
+		return Objects.hash(super.hashCode());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FoodData other = (FoodData) obj;
-		return Objects.equals(modifications, other.modifications) && quantity == other.quantity;
+		return super.equals(obj);
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class Bill {
 	 * this method runs it updates foodCost */
 	public void addFoodItem(FoodData item) {
 		order.add(item);
-		this.foodCost += item.getPrice();
+		calculateFoodCost();
 	}
 	
 	/* Sets the tip */ 
@@ -41,10 +41,24 @@ public class Bill {
 		this.tip = money;
 	}
 	
+	/* This method calculates the cost of only the food */
+	private void calculateFoodCost() {
+		double cost = 0;
+		for (FoodData item: order) {
+			cost += item.getPrice();
+		}
+		this.foodCost = cost;
+	}
+	
 	/* This method returns the price of the bill which includes the price of the food
 	 * plus the tip*/
 	public double calculateBill() {
 		return foodCost + tip;
+	}
+	
+	public ArrayList<FoodData> getOrder(){
+		ArrayList<FoodData> copyOrder = new ArrayList<>(this.order);
+		return copyOrder;
 	}
 	
 	@Override
