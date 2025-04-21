@@ -62,7 +62,10 @@ public class Bill {
 	}
 	
 	public ArrayList<FoodData> getOrder(){
-		ArrayList<FoodData> copyOrder = new ArrayList<>(this.order);
+		ArrayList<FoodData> copyOrder = new ArrayList<>();
+                for (FoodData fd : this.order) {
+                    copyOrder.add(new FoodData(fd));  // new instance each time
+                }
 		return copyOrder;
 	}
 	
