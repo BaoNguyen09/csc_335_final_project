@@ -3,17 +3,20 @@ package test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
 import model.Bill;
+import model.Food;
 import model.FoodData;
 import model.FoodType;
 import model.Sales;
+import model.Menu;
 
 class SalesTests {
 
-	
+	Menu menu = new Menu();
 	@Test
 	void addMultipleBills() {
 		Bill newBill = new Bill();
@@ -57,6 +60,9 @@ class SalesTests {
 				+ "Fries: 2\n"
 				+ "Hamburger: 10\n"
 				+ "Milkshake: 2\n");
+		
+		HashMap<Food, Integer> copySales = trackSales.getSales();
+		assertEquals(10, copySales.get(new Food("Hamburger", FoodType.ENTREE, 9.99)));
 	}
 	
 	@Test
@@ -109,7 +115,10 @@ class SalesTests {
 		assertEquals(trackSales.toString(), "Item Sales:\n"
 				+ "Fries: 2\n"
 				+ "Hamburger: 2\n"
-				+ "Milkshake: 2\n");	
+				+ "Milkshake: 2\n");
+		
+		
+		
 	}
 	
 	@Test
@@ -171,7 +180,7 @@ class SalesTests {
 	
 	@Test
 	void testSortOffRevenue() {
-Bill newBill = new Bill();
+		Bill newBill = new Bill();
 	
 		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 1, "No Tomatoes");
 		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 1, "");
@@ -215,4 +224,38 @@ Bill newBill = new Bill();
 		
 		assertEquals(trackSales.sortOffRevenue(), mostRev);
 	}
+	
+	@Test
+	void testSalesMenu() {
+		Bill menuBill = new Bill();
+		
+		Food burgerMenu = menu.getItemFromMenu("bacon cheeseburger");
+		FoodData burger = new FoodData(burgerMenu.getName(), burgerMenu.getType(), 
+				burgerMenu.getPrice(), 3, "");
+		
+		Food teaMenu = menu.getItemFromMenu("iced tea");
+		FoodData tea = new FoodData (teaMenu.getName(), teaMenu.getType(), teaMenu.getPrice(), 100, "");
+		
+		menuBill.addFoodItem(tea);
+		menuBill.addFoodItem(burger);
+		
+		Sales trackSales = new Sales();
+		
+		trackSales.addCompletedOrder(menuBill);
+		
+		ArrayList<FoodData> mostRev = new ArrayList<>();
+		mostRev.add(new FoodData(burger));
+		mostRev.add(new FoodData(tea));
+		
+		
+		assertEquals(mostRev, trackSales.sortOffRevenue());
+		
+		ArrayList<FoodData> mostSold = new ArrayList<>();
+		mostSold.add(new FoodData(burger));
+		mostSold.add(new FoodData(tea));
+		
+		assertEquals(mostSold, trackSales.sortMostSales());
+	}
+	
+
 }
