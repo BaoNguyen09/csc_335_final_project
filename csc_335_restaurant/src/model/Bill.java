@@ -12,18 +12,24 @@ public class Bill {
 	private double foodCost;
 	private double tip;
 	private ArrayList<FoodData> order;
+	private boolean isPaid;
+	private double amountPaid;
 	
 	/* The constructor method */
 	public Bill() {
 		order = new ArrayList<FoodData>();
 		tip = 0;
 		foodCost = 0;
+		isPaid = false;
+		amountPaid = 0;
 	}
 	
 	/* Copy constructor*/
 	public Bill(Bill other) {
 		this.foodCost = other.foodCost;
 		this.tip = other.tip;
+		isPaid = other.isPaid;
+		amountPaid = other.amountPaid;
 		ArrayList<FoodData> copyOrder = new ArrayList<>(other.order);
 		this.order = copyOrder;
 	}
@@ -46,10 +52,32 @@ public class Bill {
 		return tip;
 	}
 	
+	public double getAmountPaid() {
+		return amountPaid;
+	}
+	
+	public double getFoodCost() {
+		return foodCost;
+	}
+	
 	/* This method returns the price of the bill which includes the price of the food
 	 * plus the tip*/
 	public double calculateBill() {
 		return foodCost + tip;
+	}
+	
+	public boolean isPaid() {
+		return isPaid;
+	}
+	
+	public void payBill() {
+		amountPaid = calculateBill();
+		isPaid = true;
+	}
+	
+	public void splitBill(double amount) {
+		amountPaid = amount;
+		isPaid = true;
 	}
 	
 	@Override
