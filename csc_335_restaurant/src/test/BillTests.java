@@ -29,6 +29,7 @@ class BillTests {
 		test.add(milkshake);
 		test.add(fries);
 		
+	
 		
 		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=1, price: $9.99\n"
 				+ "modifications=No Tomatoes]\n"
