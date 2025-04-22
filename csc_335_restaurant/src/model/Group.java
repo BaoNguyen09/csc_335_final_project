@@ -29,7 +29,11 @@ public class Group {
 	/* Copy constructor*/
 	public Group(Group other) {
 		this.groupId = other.groupId;
+		// two line below won't work because it tries to access private variables
+		// I put it there as reminder, if we end up needing to use this copy constructor
+		// I will then implement methods to get this list and map
 		this.members = other.members;
+		this.customerMap = other.customerMap;
 	}
 	
 	/* Return total amount of food and tip */
