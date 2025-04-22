@@ -54,6 +54,14 @@ public class Group {
 		return members.size();
 	}
 	
+	public List<String> getCustomersName() {
+		List<String> customers = new ArrayList<>();
+		for (Customer c: members) {
+			customers.add(c.getName());
+		}
+		return customers;
+	}
+	
 	/*
 	 * Gives a read-only view of this group’s customers.
 	 * Callers can do session.orderFood(...) but can’t modify the list
@@ -68,6 +76,17 @@ public class Group {
 	public void addPerson(Customer newMember) {
 		if (!members.contains(newMember)) { // only add if new member isn't already in the group
 			members.add(newMember);
+		}
+	}
+	
+	public void splitBillEvenly() {
+		double totalBill = 0;
+		for (Customer c: members) {
+			totalBill += c.getBill().getFoodCost();
+		}
+		double splitAmount = totalBill / members.size();
+		for (Customer c: members) {
+			c.splitBill(splitAmount);
 		}
 	}
 	
