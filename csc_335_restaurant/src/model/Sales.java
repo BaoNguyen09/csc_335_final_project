@@ -10,13 +10,13 @@ import java.util.*;
 public class Sales {
 	/* The sales HashMap keeps track of how many of each item is sold
 	 * The itemRevenue HashMap keeps track of how many of each item is sold */
-	private HashMap<FoodData, Integer> sales;
-	private HashMap<FoodData, Double> itemRevenue;
+	private HashMap<Food, Integer> sales;
+	private HashMap<Food, Double> itemRevenue;
 	
 	// Constructor method
 	public Sales() {
-		sales = new HashMap<FoodData, Integer>();
-		itemRevenue = new HashMap<FoodData, Double>();
+		sales = new HashMap<Food, Integer>();
+		itemRevenue = new HashMap<Food, Double>();
 	}
 	
 	
@@ -25,20 +25,21 @@ public class Sales {
 	 *  */
 	public void addCompletedOrder(Bill bill) {
 		for (FoodData food: bill.getOrder()) {
-			if(!(sales.keySet().contains(food))) {
-				sales.put(food, food.getQuantity());
+			Food copyFood = new Food(food.getName(), food.getType(), food.getPrice());
+			if(!(sales.keySet().contains(copyFood))) {
+				sales.put(copyFood, food.getQuantity());
 				continue;
 			}
-			sales.put(food, sales.get(food) + food.getQuantity());
+			sales.put(copyFood, sales.get(copyFood) + food.getQuantity());
 		}
 		updateRevenueMap();
 	}
 	
 	// getter method for sales hashmap
-	public HashMap<FoodData, Integer> getSales(){
-		HashMap<FoodData, Integer> copySales = new HashMap<>();
-		for (FoodData item : sales.keySet()) {
-			FoodData copyItem = new FoodData(item);
+	public HashMap<Food, Integer> getSales(){
+		HashMap<Food, Integer> copySales = new HashMap<>();
+		for (Food item : sales.keySet()) {
+			Food copyItem = new Food(item);
 			copySales.put(copyItem, sales.get(item));
 		}
 		return copySales;
@@ -46,14 +47,14 @@ public class Sales {
 	
 	/* This method is sorted based off the most Sales */
 	public ArrayList<FoodData>  sortMostSales(){
-		ArrayList<FoodData> mostSales = new ArrayList<>(sales.keySet());
+		ArrayList<Food> mostSales = new ArrayList<>(sales.keySet());
 		// this code sorts the arrayList by comparing the key based on the value in the
 		// sales hashMap.
 		Collections.sort(mostSales, (o1,o2) -> sales.get(o1).compareTo(sales.get(o2)));
 		ArrayList<FoodData> returnList = new ArrayList<>();
-		for (FoodData item: mostSales) {
-			FoodData copyItem = new FoodData(item);
-			copyItem.setQuantity(sales.get(item));
+		for (Food item: mostSales) {
+			FoodData copyItem = new FoodData(item.getName(), item.getType(), 
+					item.getPrice(), sales.get(item), "");
 			returnList.add(copyItem);
 		}
 		return returnList;
@@ -62,7 +63,7 @@ public class Sales {
 	/* This method is a helper method that updates the itemRevenue hashmap everytime
 	 * a completed order is added   */
 	private void updateRevenueMap() {
-		for (FoodData item: sales.keySet()) {
+		for (Food item: sales.keySet()) {
 			Double cost = item.getPrice() * sales.get(item);
 			itemRevenue.put(item, cost);
 		}
@@ -73,13 +74,13 @@ public class Sales {
 	 * (most money to least) */
 	public ArrayList<FoodData> sortOffRevenue(){
 		// ArrayList full of the keys in itemRevenue
-		ArrayList<FoodData> sortRevenue = new ArrayList<>(itemRevenue.keySet());
+		ArrayList<Food> sortRevenue = new ArrayList<>(itemRevenue.keySet());
 		// sorts items based off the total revenue they have made in ascending order
 		Collections.sort(sortRevenue, (o1, o2) -> itemRevenue.get(o1).compareTo(itemRevenue.get(o2)));
 		ArrayList<FoodData> copyList = new ArrayList<>();
-		for (FoodData item: sortRevenue) {
-			FoodData copyItem = new FoodData(item);
-			copyItem.setQuantity(sales.get(item));
+		for (Food item: sortRevenue) {
+			FoodData copyItem = new FoodData(item.getName(), item.getType(), 
+					item.getPrice(), sales.get(item), "");
 			copyList.add(copyItem);
 		}
 		return copyList;
@@ -88,9 +89,9 @@ public class Sales {
 	@Override 
 	public String toString() {
 		String result = "Item Sales:\n";
-		ArrayList<FoodData> sortedFood = new ArrayList<>(sales.keySet());
+		ArrayList<Food> sortedFood = new ArrayList<>(sales.keySet());
 		Collections.sort(sortedFood, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-		for (FoodData food: sortedFood) {
+		for (Food food: sortedFood) {
 			result += food.getName() + ": " +  sales.get(food) + "\n";
 		}
 		return result;
