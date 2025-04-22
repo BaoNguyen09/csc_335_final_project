@@ -12,6 +12,7 @@ package model;
 import java.util.Objects;
 
 public class FoodData extends Food{
+	private Food food;
 	private int quantity;
 	private String modifications;
 	
@@ -23,7 +24,7 @@ public class FoodData extends Food{
 	
 	//copy constructor for FoodData
 	public FoodData(FoodData food) {
-		super(food.getName(), food.getType(), (food.getPrice()/ food.getQuantity()));
+		super(food.getName(), food.getType(), food.getPrice());
 		this.quantity = food.getQuantity();
 		this.modifications = food.getModifications();
 	}
@@ -31,7 +32,7 @@ public class FoodData extends Food{
 	public int getQuantity() {
 		return this.quantity;
 	}
-
+	
 	public String getModifications() {
 		return this.modifications;
 	}
@@ -47,7 +48,7 @@ public class FoodData extends Food{
 	// need to override getPrice 
 	@Override
 	public double getPrice() {
-		return quantity * super.getPrice();
+		return super.getPrice();
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class FoodData extends Food{
 
 	@Override
 	public String toString() {
-		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + this.getPrice() +
+		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + quantity * this.getPrice() +
 				"\nmodifications=" + modifications + "]";
 	}
 }
