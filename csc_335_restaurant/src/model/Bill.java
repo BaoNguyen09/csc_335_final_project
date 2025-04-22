@@ -40,6 +40,11 @@ public class Bill {
 	public void setTip(double money) {
 		this.tip = money;
 	}
+
+	/* Get the tip */
+	public double getTip() {
+		return tip;
+	}
 	
 	/* This method calculates the cost of only the food */
 	private void calculateFoodCost() {
