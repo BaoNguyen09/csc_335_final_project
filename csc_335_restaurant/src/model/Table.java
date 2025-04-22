@@ -106,6 +106,10 @@ public class Table {
 			
 		}
 		
+		public int getGroupId() {
+			return group.getGroupId();
+		}
+		
 		public void clearTable() {
 			group = null;
 			isOccupied = false;
