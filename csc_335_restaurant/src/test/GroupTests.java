@@ -122,5 +122,44 @@ class GroupTests {
     	group2.addPerson(bob);
     	assertEquals(2, group2.getGroupId());
     }
+    
+    @Test
+    void testPlaceOrder() {
+        // Place an order for Alice
+        Food fries = new Food("Fries", FoodType.SIDE, 3.0);
+        group.placeOrder("Alice", fries, 2, "extra crispy");
+        // Alice's bill should reflect 2 * 3.0 + 10.0 (burger) + 2.0 (tip)= 18.0
+        assertEquals(18.0, alice.getBillCost(), 0.001);
+    }
+
+    @Test
+    void testAddTip() {
+        // Add a tip for Bob
+        group.addTip("Bob", 4.5);
+        // Bob's tip should be 4.5
+        assertEquals(4.5, bob.getBill().getTip(), 0.001);
+    }
+
+    @Test
+    void testPayBill() {
+        // Alice orders something
+        Food burger = new Food("Burger", FoodType.ENTREE, 10.0);
+        group.placeOrder("Alice", burger, 1, "");
+        // Pay Alice's bill
+        assertFalse(alice.isBillPaid());
+        group.payBill("Alice");
+        assertTrue(alice.isBillPaid());
+    }
+
+    @Test
+    void testNonexistentCustomer() {
+        // Methods should silently ignore unknown names
+        group.placeOrder("Charlie", new Food("Soda", FoodType.DRINK, 2.5), 1, "");
+        group.addTip("Charlie", 1.0);
+        group.payBill("Charlie");
+        // Original customers unchanged
+        assertEquals(12, alice.getBillCost(), 0.001);
+        assertEquals(6.0, bob.getBillCost(), 0.001);
+    }
 
 }
