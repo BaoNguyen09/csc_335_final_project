@@ -24,25 +24,25 @@ public class Sales {
 	 * and adding the quantity
 	 *  */
 	public void addCompletedOrder(Bill bill) {
-		Menu menu = new Menu();
 		for (FoodData food: bill.getOrder()) {
-			System.out.println(food.getName());
-			Food copyFood = menu.getItemFromMenu(food.getName());
-			if (copyFood != null) {
-				if(!(sales.keySet().contains(copyFood))) {
-					sales.put(copyFood, food.getQuantity());
-					continue;
-				}
-				sales.put(copyFood, sales.get(copyFood) + food.getQuantity());
+			Food copyFood = new Food(food.getName(), food.getType(), food.getPrice());
+			if(!(sales.keySet().contains(copyFood))) {
+				sales.put(copyFood, food.getQuantity());
+				continue;
 			}
-			
+			sales.put(copyFood, sales.get(copyFood) + food.getQuantity());
 		}
 		updateRevenueMap();
 	}
 	
 	// getter method for sales hashmap
 	public HashMap<Food, Integer> getSales(){
-		return sales;
+		HashMap<Food, Integer> copySales = new HashMap<>();
+		for (Food item : sales.keySet()) {
+			Food copyItem = new Food(item);
+			copySales.put(copyItem, sales.get(item));
+		}
+		return copySales;
 	}
 	
 	/* This method is sorted based off the most Sales */
