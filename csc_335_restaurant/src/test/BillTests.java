@@ -5,6 +5,8 @@ import model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
 class BillTests {
@@ -22,6 +24,11 @@ class BillTests {
 		newBill.addFoodItem(milkshake);
 		newBill.addFoodItem(fries);
 		
+		ArrayList<FoodData> test = new ArrayList<>();
+		test.add(hamburger);
+		test.add(milkshake);
+		test.add(fries);
+		
 	
 		
 		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=1, price: $9.99\n"
@@ -34,6 +41,7 @@ class BillTests {
 				+ "Total Cost: $17.97\n" );
 		
 		assertEquals(newBill.calculateBill(), 17.97);
+		assertEquals(newBill.getOrder(), test);
 
 	}
 	
@@ -110,4 +118,3 @@ class BillTests {
 		assertEquals(newBill.toString(), copyBill.toString());
 	}
 }
-

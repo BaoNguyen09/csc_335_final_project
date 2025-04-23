@@ -85,4 +85,13 @@ class FoodTests {
 		Food food = new Food("Bread", FoodType.APPETIZER, 4.35);
 		assertEquals(food.hashCode(), hash);
 	}
+	
+	@ Test
+	void testCopyConstructor() {
+		Food food = new Food("Bread", FoodType.APPETIZER, 4.35);
+		Food food2 = new Food(food);
+		assertEquals(food, food2);
+		
+	}
 }
+

@@ -24,7 +24,7 @@ public class Menu {
 	}
 	
 	private void processMenuData() throws FileNotFoundException {
-		InputStream in = getClass().getResourceAsStream("/MenuData.txt");
+		InputStream in = getClass().getResourceAsStream("/resources/MenuData.txt");
 		if (in == null) {
 			throw new FileNotFoundException("Could not find MenuData.txt");
 		}

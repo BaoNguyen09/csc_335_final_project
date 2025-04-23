@@ -11,9 +11,9 @@ import java.util.ArrayList;
 public class Bill {
 	private double foodCost;
 	private double tip;
+	private double amountPaid;
 	private ArrayList<FoodData> order;
 	private boolean isPaid;
-	private double amountPaid;
 	
 	/* The constructor method */
 	public Bill() {
@@ -39,7 +39,7 @@ public class Bill {
 	 * this method runs it updates foodCost */
 	public void addFoodItem(FoodData item) {
 		order.add(item);
-		this.foodCost += item.getPrice();
+		this.foodCost += item.getTotalPrice();
 	}
 	
 	/* Sets the tip */ 
@@ -92,3 +92,5 @@ public class Bill {
 	}
 	
 }
+
+
