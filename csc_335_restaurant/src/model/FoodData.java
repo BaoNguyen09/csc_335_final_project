@@ -45,27 +45,18 @@ public class FoodData extends Food{
 		this.modifications = m;
 	}
 
-	public double getPrice() {
-		return super.getPrice();
+	public double getTotalPrice() {
+		return quantity * super.getPrice();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = prime + Objects.hash(modifications, quantity);
-		return result;
+		return Objects.hash(super.hashCode());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FoodData other = (FoodData) obj;
-		return Objects.equals(modifications, other.modifications) && quantity == other.quantity;
+		return super.equals(obj);
 	}
 
 	@Override
