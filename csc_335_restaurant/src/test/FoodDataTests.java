@@ -47,6 +47,7 @@ public class FoodDataTests {
 	void testGetPrice() {
 		FoodData foodData = new FoodData("Burger", FoodType.ENTREE, 8.49, 2, "None");
 		assertEquals(foodData.getPrice(), 8.49);
+		assertEquals(foodData.getTotalPrice(), (8.49 * 2));
 	}
 
 	@Test
