@@ -25,7 +25,7 @@ public class Sales {
 	 *  */
 	public void addCompletedOrder(Bill bill) {
 		for (FoodData food: bill.getOrder()) {
-			Food copyFood = new Food(food.getName(), food.getType(), food.getPrice());
+			Food copyFood = (Food) food;
 			if(!(sales.keySet().contains(copyFood))) {
 				sales.put(copyFood, food.getQuantity());
 				continue;
