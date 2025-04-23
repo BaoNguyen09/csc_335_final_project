@@ -1,27 +1,33 @@
-package view;
+ package view;
 
-import model.Menu;
-import view.OrderingUI;
+import model.RestaurantObserver;
+import model.Restaurant;
+import model.Server;
 
 import javax.swing.*;
+
+import controller.Controller;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantUI extends JFrame {
+public class RestaurantUI extends JFrame implements RestaurantObserver {
     private JList<String> serverList;
     private DefaultListModel<String> serverListModel;
     private JList<String> groupList;
     private DefaultListModel<String> groupListModel;
     private List<TableBox> tables;
+    private Controller controller;
 
-    public RestaurantUI() {
+    public RestaurantUI(Controller controller) {
         super("Restaurant Floor Plan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
         setLocationRelativeTo(null);
         tables = new ArrayList<>();
         initComponents();
+        this.controller = controller;
     }
 
     private void initComponents() {
@@ -38,9 +44,9 @@ public class RestaurantUI extends JFrame {
         leftPanel.add(serverList);
 
         groupListModel = new DefaultListModel<>();
-        groupListModel.addElement("Group A (3)");
-        groupListModel.addElement("Group B (5)");
-        groupListModel.addElement("Group C (2)");
+        groupListModel.addElement("Group 1");
+        groupListModel.addElement("Group 2");
+        groupListModel.addElement("Group 3");
         groupList = new JList<>(groupListModel);
         groupList.setBorder(BorderFactory.createTitledBorder("Waiting Groups"));
         leftPanel.add(Box.createVerticalStrut(20));
@@ -92,22 +98,28 @@ public class RestaurantUI extends JFrame {
     }
 
     private void assignServer() {
-        TableBox selected = getSelectedTable();
-        String server = serverList.getSelectedValue();
-        if (selected != null && server != null) {
-            selected.setServer(server);
+    	TableBox selected = getSelectedTable();
+        String serverName = serverList.getSelectedValue();
+        if (selected != null && serverName != null) {
+            // when the server is assigned to the table need to update controller
+        	// get the id of the table
+        	int id = Integer.valueOf(selected.getId().substring(1));
+        	controller.assignServer(serverName, id);
         } else {
             JOptionPane.showMessageDialog(this, "Select a table and a server first.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }
 
     private void assignGroup() {
-        TableBox selected = getSelectedTable();
-        String group = groupList.getSelectedValue();
-        if (selected != null && group != null) {
-            selected.setGroup(group);
-            selected.setStatus(TableBox.Status.OCCUPIED);
-            groupListModel.removeElement(group);
+    	TableBox selected = getSelectedTable();
+        String groupInfo = groupList.getSelectedValue();
+        if (selected != null && groupInfo != null) {
+            // when the group is assigned to table need to update controller
+        	// get the id of the table
+        	int id = Integer.valueOf(selected.getId().substring(1));
+        	// get the groupNum from the string
+        	int groupNum = Integer.valueOf(groupInfo.substring(6));
+        	controller.assignGroup(groupNum, id);
         } else {
             JOptionPane.showMessageDialog(this, "Select a table and a group first.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
@@ -135,7 +147,11 @@ public class RestaurantUI extends JFrame {
     private void removeServerFromTable() {
         TableBox selected = getSelectedTable();
         if (selected != null && selected.server != null) {
-            selected.setServer(null);
+        	// when the server is assigned to the table need to update controller
+        	// get the id of the table
+        	int id = Integer.valueOf(selected.getId().substring(1));
+        	// get the name of the server assigned to selected table
+        	controller.assignServer(selected.getServer(), id);
         } else {
             JOptionPane.showMessageDialog(this, "Select a table with an assigned server.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
@@ -188,6 +204,14 @@ public class RestaurantUI extends JFrame {
             this.group = group;
             repaint();
         }
+        
+        public String getId() {
+        	return this.id;
+        }
+        
+        public String getServer() {
+        	return this.server;
+        }
 
         public void setStatus(Status status) {
             this.status = status;
@@ -226,6 +250,46 @@ public class RestaurantUI extends JFrame {
             }
         }
     }
-} 
 
+    @Override
+    public void assignServerEvent(Server s, int tableNum) {
+    	/* when the restaurant is updated and calls the update observer function
+    	 * this function is called which updates the UI in accordance with the model
+    	 */
+    	String tableId = "T" + tableNum;
+    	for (TableBox t : tables) {
+    		if (t.getId().equals(tableId)) {
+    			t.setServer(s.getName());
+    		}
+    	}
+    }
+
+    @Override
+    public void assignGroupEvent(int groupId, int tableNum) {
+    	/* when the restaurant is updated and calls the update observer function
+    	 * this function is called which updates the UI in accordance with the model
+    	 */
+    	String tableId = "T" + tableNum;
+    	for (TableBox t : tables) {
+    		if (t.getId().equals(tableId) && t.getStatus() == TableBox.Status.VACANT) {
+    			String g = "Group " + groupId;
+    			t.setGroup(g);
+    			t.setStatus(TableBox.Status.OCCUPIED);
+    		}
+    	}
+    }
+
+	@Override
+	public void removeServerEvent(Server s, int tableNum) {
+		/* when the restaurant is updated and calls the update observer function
+    	 * this function is called which updates the UI in accordance with the model
+    	 */
+		String tableId = "T" + tableNum;
+    	for (TableBox t : tables) {
+    		if (t.getId().equals(tableId)) {
+    			t.setServer(null);
+    		}
+    	}
+	}
+} 
 
