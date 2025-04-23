@@ -161,12 +161,15 @@ class SalesTests {
 		ArrayList<FoodData> mostSales = new ArrayList<>();
 		FoodData copyHamburger = new FoodData(hamburger);
 		copyHamburger.setQuantity(10);
+		copyHamburger.setModifications("");
 
 		FoodData copyMilkshake = new FoodData(milkshake);
 		copyMilkshake.setQuantity(2);
+		copyMilkshake.setModifications("");
 		
 		FoodData copyFries = new FoodData(fries);
 		copyFries.setQuantity(3);
+		copyFries.setModifications("");
 		
 		mostSales.add(copyMilkshake);
 		mostSales.add(copyFries);
@@ -211,12 +214,15 @@ class SalesTests {
 		ArrayList<FoodData> mostRev = new ArrayList<>();
 		FoodData copyHamburger = new FoodData(hamburger);
 		copyHamburger.setQuantity(6);
+		copyHamburger.setModifications("");
 
 		FoodData copyMilkshake = new FoodData(milkshake);
 		copyMilkshake.setQuantity(51);
+		copyMilkshake.setModifications("");
 		
 		FoodData copyFries = new FoodData(fries);
 		copyFries.setQuantity(2);
+		copyFries.setModifications("");
 		
 		mostRev.add(copyFries);
 		mostRev.add(copyHamburger);

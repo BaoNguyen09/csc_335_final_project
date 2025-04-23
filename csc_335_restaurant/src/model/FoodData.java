@@ -51,17 +51,26 @@ public class FoodData extends Food{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode());
+		final int prime = 31;
+		int result = prime + Objects.hash(modifications, quantity);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return super.equals(obj);
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FoodData other = (FoodData) obj;
+		return Objects.equals(modifications, other.modifications) && quantity == other.quantity;
 	}
 
 	@Override
 	public String toString() {
-		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + quantity * this.getPrice() +
+		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + this.getTotalPrice() +
 				"\nmodifications=" + modifications + "]";
 	}
 }
