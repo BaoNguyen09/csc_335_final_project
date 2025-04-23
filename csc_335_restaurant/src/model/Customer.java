@@ -25,11 +25,15 @@ public class Customer implements OrderFood{
 	
 	public void payBill() {
 		// when bill is paid the reference is set to null
-		bill = null;
+		bill.payBill();
+	}
+	
+	public void splitBill(double amount) {
+		bill.splitBill(amount);
 	}
 	
 	public boolean isBillPaid() {
-		return bill == null;
+		return bill.isPaid();
 	}
 	
 	public double getBillCost() {

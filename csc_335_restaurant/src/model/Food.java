@@ -14,21 +14,28 @@ public class Food {
 	private String name;
 	private FoodType TYPE;
 	private double price;
-	
+
 	public Food(String name, FoodType type, double price) {
 		this.name = name;
 		this.TYPE = type;
 		this.price = price;
 	}
-	
+
+	// copy contructor for FoodData
+	public Food(Food food) {
+		this.name = food.getName();
+		this.TYPE = food.getType();
+		this.price = food.getPrice();
+	}
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public FoodType getType() {
 		return this.TYPE;
 	}
-	
+
 	public double getPrice() {
 		return this.price;
 	}
@@ -42,6 +49,7 @@ public class Food {
 	public int hashCode() {
 		return Objects.hash(TYPE, name, price);
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
