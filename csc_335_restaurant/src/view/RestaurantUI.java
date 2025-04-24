@@ -1,7 +1,6 @@
  package view;
 
 import model.RestaurantObserver;
-import model.Restaurant;
 import model.Server;
 
 import javax.swing.*;
@@ -36,6 +35,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver {
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         serverListModel = new DefaultListModel<>();
+        // get all the server names from restaurant and add them by name
         serverListModel.addElement("Alice");
         serverListModel.addElement("Bob");
         serverListModel.addElement("Charlie");
@@ -252,14 +252,14 @@ public class RestaurantUI extends JFrame implements RestaurantObserver {
     }
 
     @Override
-    public void assignServerEvent(Server s, int tableNum) {
+    public void assignServerEvent(String serverName, int tableNum) {
     	/* when the restaurant is updated and calls the update observer function
     	 * this function is called which updates the UI in accordance with the model
     	 */
     	String tableId = "T" + tableNum;
     	for (TableBox t : tables) {
     		if (t.getId().equals(tableId)) {
-    			t.setServer(s.getName());
+    			t.setServer(serverName);
     		}
     	}
     }
@@ -280,7 +280,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver {
     }
 
 	@Override
-	public void removeServerEvent(Server s, int tableNum) {
+	public void removeServerEvent(int tableNum) {
 		/* when the restaurant is updated and calls the update observer function
     	 * this function is called which updates the UI in accordance with the model
     	 */
