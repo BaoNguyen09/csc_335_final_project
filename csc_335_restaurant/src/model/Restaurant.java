@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,27 +10,22 @@ import java.util.Map;
 
 public class Restaurant {
 	// Core components of the restaurant
-    private List<Server> servers; // All servers in the restaurant
     private Map<String, Server> serverMap; // Fast table lookup by server name (no duplicates allow)
     private Map<Integer, Table> tableMap; // Fast table lookup by table number
-    private List<Group> waitlist; // Queue for unassigned groups
+    private Map<Integer, Group> waitlist; // Queue for unassigned groups
     private Map<Integer, Group> activeGroups; // List of all groups being served
-    private List<Customer> allCustomers; // Central list of all known customers
     private Menu menu; // Menu of available food items
     private Sales sales; // Tracks completed orders for reporting
-    private int availableTables; // Track how many tables are available
 
-    public Restaurant(int[] tableCapacities) {
-        this.servers = new ArrayList<>();
+    public Restaurant() {
         this.serverMap = new HashMap<>();
         this.tableMap = new HashMap<>();
-        this.waitlist = new ArrayList<>();
+        this.waitlist = new HashMap<>();
         this.activeGroups = new HashMap<>();
-        this.allCustomers = new ArrayList<>();
         this.menu = new Menu();
         this.sales = new Sales();
-        availableTables = tableCapacities.length;
-
+        
+        int[] tableCapacities = {2, 2, 4, 4, 10, 10}; // Initial table
         int numTables = tableCapacities.length;
         for (int i = 0; i < numTables; i++) {
             Table t = new Table(i + 1, tableCapacities[i]);
@@ -37,67 +33,44 @@ public class Restaurant {
         }
     }
 
-    // --------------------- Customer Management ---------------------
-
-    public void addCustomer(String name) {
-        if (getCustomerByName(name) == null) {
-            allCustomers.add(new Customer(name));
-        }
-    }
-
-    public List<Customer> getAllCustomers() {
-    	List<Customer> customers = new ArrayList<>();
-    	for (Customer c: allCustomers) {
-    		customers.add(new Customer(c));
-    	}
-        return Collections.unmodifiableList(customers);
-    }
-
     // --------------------- Group Management ---------------------
 
     public int addGroup(List<String> customerNames) {
         Group group = new Group();
         for (String name : customerNames) {
-            Customer c = getCustomerByName(name);
-            System.out.println(c);
+            Customer c = new Customer(name);
             if (c != null) group.addPerson(c);
         }
-        waitlist.add(group);
-        assignTable();
+        waitlist.put(group.getGroupId(), group);
         return group.getGroupId();
     }
 
-    public void assignTable() {
-        int i = 0;
-        // iterate through the waitlist groups, and assign table for each of them
-        while (i < waitlist.size() && availableTables > 0) {
-            Group group = waitlist.get(i);
-            for (Table table : tableMap.values()) {
-                if (!table.isOccupied() && table.getMaxCapacity() >= group.getGroupSize()) {
-                    if (table.assignGroup(group)) {
-                    	Group newlyActiveGroup = waitlist.remove(i);
-                    	i--;
-                    	newlyActiveGroup.beingServed();
-                        activeGroups.put(newlyActiveGroup.getGroupId(), newlyActiveGroup);
-                        table.assignGroup(newlyActiveGroup);
-                        availableTables -= 1;
-                        break;
-                    }
-                }
-            }
-            i++;
+    public void assignTable(int groupId, int tableNum) {
+    	Group group = waitlist.getOrDefault(groupId, null);
+        Table table = tableMap.getOrDefault(tableNum, null);
+        if (group != null && table != null) {
+        	Group newlyActiveGroup = waitlist.get(groupId);
+        	newlyActiveGroup.beingServed();
+            activeGroups.put(newlyActiveGroup.getGroupId(), newlyActiveGroup);
+            table.assignGroup(newlyActiveGroup);
+        	waitlist.remove(groupId);
         }
     }
 
     // --------------------- Server Management ---------------------
 
-    public void addServer(String name) {
-    	Server newServer = new Server(name);
-        servers.add(newServer);
-        serverMap.putIfAbsent(name, newServer);
+    public boolean addServer(String name) {
+    	if (!serverMap.containsKey(name)) {
+    		Server newServer = new Server(name);
+            serverMap.put(name, newServer);
+            return true;
+    	}
+    	return false;
     }
 
     public Server getTopTipEarner() {
+    	List<Server> servers = new ArrayList<>(serverMap.values());
+    	System.out.println(servers);
         Server server = Collections.max(servers, Comparator.comparingDouble(s -> s.getTips()));
         return new Server(server); // add copy constructor for Server
     }
@@ -106,7 +79,9 @@ public class Restaurant {
         Server server = serverMap.getOrDefault(serverName, null);
         Table table = getTableByNumber(tableNum);
         if (server != null && table != null) {
-            return table.assignServer(server);
+        	server.addTable(tableNum);
+        	table.assignServer(serverName);
+            return true;
         }
         return false;
     }
@@ -122,48 +97,64 @@ public class Restaurant {
         return false;
     }
 
-    public void addTipFor(int groupId, String name, double amount) {
+    public boolean addTipFor(int groupId, String customerName, double amount) {
     	Group g = getGroupById(groupId);
         if (g != null && !g.onWaitlist()) {
-            g.addTip(name, amount);
+            g.addTip(customerName, amount);
+            return true;
         }
+        return false;
     }
 
     public boolean payBillFor(int groupId, String name) {
         Group g = getGroupById(groupId);
         if ( g != null && g.payBill(name) && !g.onWaitlist()) {
-            Customer c = getCustomerByName(name);
-            System.out.println("god test: " +c);
-            if (c != null && c.isBillPaid()) {
-            	System.out.println("fyc");
-            	sales.addCompletedOrder(c.getBill());
+            Bill customerBill = g.getCustomerBill(name);
+            if (customerBill != null) {
+            	sales.addCompletedOrder(customerBill);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean splitAndPayBillEvenly(int groupId) {
+    	Group g = getGroupById(groupId);
+    	System.out.println("group: " + g);
+        if (g != null && !g.onWaitlist()) {
+            g.splitBillEvenly();
+            for (String customerName: g.getCustomersName()) {
+            	Bill customerBill = g.getCustomerBill(customerName);
+                if (customerBill != null) {
+                	sales.addCompletedOrder(customerBill);
+                	continue;
+                }
+                return false;
             }
             return true;
         }
         return false;
     }
 
-    public void splitAndPayBillEvenly(int groupId) {
-    	Group g = getGroupById(groupId);
-        if (g != null && !g.onWaitlist()) {
-            g.splitBillEvenly();
-            for (String customerName: g.getCustomersName()) {
-            	Customer c = getCustomerByName(customerName);
-                if (c != null && !c.isBillPaid()) {
-                	sales.addCompletedOrder(c.getBill());
-                }
-            }
-        }
-    }
-
-    public void closeGroupOrder(int tableNum) {
+    public boolean closeGroupOrder(int tableNum) {
         Table t = getTableByNumber(tableNum);
+        System.out.println("table 100: " + t);
         if (t != null && t.isOccupied()) {
-            t.clearTable();
-            availableTables += 1;
+        	Group g = getGroupById(t.getGroupId());
+            Server s = serverMap.getOrDefault(t.getAssignedServerName(), null);
+            if (g == null || s == null) {
+            	return false;
+            }
+            System.out.println(t.getGroupId());
             activeGroups.remove(t.getGroupId());
-            assignTable();
+            if (g.orderTaken()) {
+		        double tips = g.getTotalTip();
+		        s.addTips(tips);
+            }
+            t.clearTable();
+            return true;
         }
+        return false;
     }
 
     // --------------------- Sales Reporting ---------------------
@@ -187,13 +178,13 @@ public class Restaurant {
         return tableMap.getOrDefault(tableNum, null);
     }
     
-    public void showMenu() {
-    	System.out.println(menu);
+    public Menu getMenu() {
+    	return menu;
     }
 
-    public void showWaitlist() {
-        waitlist.forEach(g -> System.out.println("Group " + g.getGroupId() + ": size = " + g.getGroupSize()));
-    }
+//    public void showWaitlist() {
+//        waitlist.forEach(g -> System.out.println("Group " + g.getGroupId() + ": size = " + g.getGroupSize()));
+//    }
 
     public void showTopTipEarner() {
         Server top = getTopTipEarner();
@@ -206,14 +197,14 @@ public class Restaurant {
         System.out.println(sales);
     }
     
-    private Customer getCustomerByName(String name) {
-        for (Customer c : allCustomers) {
-            if (c.getName().equalsIgnoreCase(name)) {
-                return c;
-            }
-        }
-        return null;
-    }
+//    private Customer getCustomerByName(String name) {
+//        for (Customer c : allCustomers) {
+//            if (c.getName().equalsIgnoreCase(name)) {
+//                return c;
+//            }
+//        }
+//        return null;
+//    }
     
     private Group getGroupById(int groupId) {
         return activeGroups.getOrDefault(groupId, null);
