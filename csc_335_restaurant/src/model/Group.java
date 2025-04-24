@@ -18,6 +18,7 @@ public class Group {
 	private ArrayList<Customer> members;
 	private Map<String, Customer> customerMap;
 	private boolean onWaitlist;
+	private boolean orderTaken;
 	
 	/* The constructor method */
 	public Group() {
@@ -25,6 +26,7 @@ public class Group {
 		nextGroupId++;
 		this.members = new ArrayList<Customer>();
 		this.onWaitlist = true;
+		orderTaken = false;
 		customerMap = new HashMap<String, Customer>();
 	}
 	
@@ -36,6 +38,7 @@ public class Group {
 		// I will then implement methods to get this list and map
 		this.members = other.members;
 		this.customerMap = other.customerMap;
+		this.orderTaken = other.orderTaken();
 		this.onWaitlist = other.onWaitlist();
 	}
 	
@@ -45,6 +48,10 @@ public class Group {
 	
 	public boolean onWaitlist() {
 		return onWaitlist;
+	}
+	
+	public boolean orderTaken() {
+		return orderTaken;
 	}
 	
 	/* Return total amount of food and tip */
@@ -99,6 +106,7 @@ public class Group {
 	public boolean placeOrder(String name, Food food, int qty, String mods) {
 		Customer customer = customerMap.getOrDefault(name, null);
 		if (customer != null) {
+			orderTaken = true;
 			return customer.orderFood(food, qty, mods);
 		}
 		return false;
@@ -109,10 +117,18 @@ public class Group {
 	 */
 	public boolean payBill(String name) {
 		Customer customer = customerMap.getOrDefault(name, null);
-		if (customer != null) {
-			return customer.payBill();
+		if (customer != null && customer.payBill()) {
+			return true;
 		}
 		return false;
+	}
+	
+	public Bill getCustomerBill(String name) {
+		Customer customer = customerMap.getOrDefault(name, null);
+		if (customer != null) {
+			return new Bill(customer.getBill());
+		}
+		return null;
 	}
 	
 	/*
