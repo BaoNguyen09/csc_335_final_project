@@ -88,12 +88,6 @@ public class Table {
 			return false;
 		}
 		
-		public void removeServer() {
-			if (assignedServer != null) {
-				assignedServer.removeTable(tableNum);
-				assignedServer = null;
-			}
-		}
 		
 		// Returns true if the group was successfully assigned, false otherwise
 		public boolean assignGroup (Group group) {
@@ -110,6 +104,10 @@ public class Table {
 			group = null;
 			isOccupied = false;
 			takenOrder = false;
+			if (assignedServer != null) {
+				assignedServer.removeTable(tableNum);
+				assignedServer = null;
+			}
 		}
 
 		
