@@ -17,12 +17,14 @@ public class Group {
 	private static int nextGroupId = 1;
 	private ArrayList<Customer> members;
 	private Map<String, Customer> customerMap;
+	private boolean onWaitlist;
 	
 	/* The constructor method */
 	public Group() {
 		this.groupId = nextGroupId;
 		nextGroupId++;
 		this.members = new ArrayList<Customer>();
+		this.onWaitlist = true;
 		customerMap = new HashMap<String, Customer>();
 	}
 	
@@ -34,6 +36,15 @@ public class Group {
 		// I will then implement methods to get this list and map
 		this.members = other.members;
 		this.customerMap = other.customerMap;
+		this.onWaitlist = other.onWaitlist();
+	}
+	
+	public void beingServed() {
+		this.onWaitlist = false;
+	}
+	
+	public boolean onWaitlist() {
+		return onWaitlist;
 	}
 	
 	/* Return total amount of food and tip */
@@ -85,21 +96,23 @@ public class Group {
 	 * This method will handle the ordering directly. Still need to discuss how to
 	 * deal with customer with the same name (maybe add an id)
 	 */
-	public void placeOrder(String name, Food food, int qty, String mods) {
+	public boolean placeOrder(String name, Food food, int qty, String mods) {
 		Customer customer = customerMap.getOrDefault(name, null);
 		if (customer != null) {
-			customer.orderFood(food, qty, mods);
+			return customer.orderFood(food, qty, mods);
 		}
+		return false;
 	}
 	
 	/*
 	 * This method will handle the paying bill directly.
 	 */
-	public void payBill(String name) {
+	public boolean payBill(String name) {
 		Customer customer = customerMap.getOrDefault(name, null);
 		if (customer != null) {
-			customer.payBill();
+			return customer.payBill();
 		}
+		return false;
 	}
 	
 	/*

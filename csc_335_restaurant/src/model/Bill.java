@@ -37,9 +37,12 @@ public class Bill {
 	
 	/* This method adds a foodItem to order, it creates a new foodItem and adds it and each time
 	 * this method runs it updates foodCost */
-	public void addFoodItem(FoodData item) {
-		order.add(item);
-		this.foodCost += item.getTotalPrice();
+	public boolean addFoodItem(FoodData item) {
+		if (order.add(item)) {
+			this.foodCost += item.getTotalPrice();
+			return true;
+		}
+		return false;
 	}
 	
 	/* Sets the tip */ 
@@ -66,13 +69,26 @@ public class Bill {
 		return foodCost + tip;
 	}
 	
+	public ArrayList<FoodData> getOrder(){
+		ArrayList<FoodData> copyOrder = new ArrayList<>();
+		for (FoodData item: order) {
+			FoodData copyFood = new FoodData(item);
+			copyOrder.add(copyFood);
+		}
+		return copyOrder;
+	}
+	
 	public boolean isPaid() {
 		return isPaid;
 	}
 	
-	public void payBill() {
-		amountPaid = calculateBill();
-		isPaid = true;
+	public boolean payBill() {
+		if (calculateBill() >= 0) {
+			amountPaid = calculateBill();
+			isPaid = true;
+			return true;
+		}
+		return false;
 	}
 	
 	public void splitBill(double amount) {
