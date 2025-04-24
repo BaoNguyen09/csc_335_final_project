@@ -28,6 +28,12 @@ public class FoodData extends Food{
 		this.quantity = food.getQuantity();
 		this.modifications = food.getModifications();
 	}
+	
+	public FoodData(Food food, int qty, String mods) {
+		super(food.getName(), food.getType(), food.getPrice());
+		this.quantity = qty;
+		this.modifications = mods;
+	}
 
 	public int getQuantity() {
 		return this.quantity;
@@ -70,7 +76,7 @@ public class FoodData extends Food{
 
 	@Override
 	public String toString() {
-		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", price: $" + this.getTotalPrice() +
+		return "FoodData [food=" + this.getName() + ", quantity=" + quantity + ", total price: $" + this.getTotalPrice() +
 				"\nmodifications=" + modifications + "]";
 	}
 }

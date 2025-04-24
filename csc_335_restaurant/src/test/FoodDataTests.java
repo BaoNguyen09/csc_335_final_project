@@ -53,7 +53,7 @@ public class FoodDataTests {
 	@Test
 	void testToString() {
 		FoodData foodData = new FoodData("Burger", FoodType.ENTREE, 8.49, 2, "None");
-		assertEquals(foodData.toString(), "FoodData [food=Burger, quantity=2, price: $16.98\nmodifications=None]");
+		assertEquals(foodData.toString(), "FoodData [food=Burger, quantity=2, total price: $16.98\nmodifications=None]");
 	}
 
 	@Test

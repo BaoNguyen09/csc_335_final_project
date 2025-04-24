@@ -7,5 +7,5 @@ package model;
 
 public interface OrderFood {
 	String getName();
-	void orderFood(Food food, int quantity, String mods);
+	boolean orderFood(Food food, int quantity, String mods);
 }

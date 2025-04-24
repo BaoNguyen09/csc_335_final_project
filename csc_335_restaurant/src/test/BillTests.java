@@ -31,11 +31,11 @@ class BillTests {
 		
 	
 		
-		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=1, price: $9.99\n"
+		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=1, total price: $9.99\n"
 				+ "modifications=No Tomatoes]\n"
-				+ "FoodData [food=Milkshake, quantity=1, price: $2.99\n"
+				+ "FoodData [food=Milkshake, quantity=1, total price: $2.99\n"
 				+ "modifications=]\n"
-				+ "FoodData [food=Fries, quantity=1, price: $4.99\n"
+				+ "FoodData [food=Fries, quantity=1, total price: $4.99\n"
 				+ "modifications=No Salt]\n"
 				+ "Tip: $0.0\n"
 				+ "Total Cost: $17.97\n" );
@@ -60,11 +60,11 @@ class BillTests {
 		newBill.addFoodItem(fries);
 		
 		
-		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=2, price: $19.98\n"
+		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=2, total price: $19.98\n"
 				+ "modifications=No Tomatoes]\n"
-				+ "FoodData [food=Milkshake, quantity=2, price: $5.98\n"
+				+ "FoodData [food=Milkshake, quantity=2, total price: $5.98\n"
 				+ "modifications=]\n"
-				+ "FoodData [food=Fries, quantity=2, price: $9.98\n"
+				+ "FoodData [food=Fries, quantity=2, total price: $9.98\n"
 				+ "modifications=No Salt]\n"
 				+ "Tip: $0.0\n"
 				+ "Total Cost: $35.94\n" );
@@ -87,11 +87,11 @@ class BillTests {
 		
 		newBill.setTip(15.00);
 		
-		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=2, price: $19.98\n"
+		assertEquals(newBill.toString(), "Order: FoodData [food=Hamburger, quantity=2, total price: $19.98\n"
 				+ "modifications=No Tomatoes]\n"
-				+ "FoodData [food=Milkshake, quantity=2, price: $5.98\n"
+				+ "FoodData [food=Milkshake, quantity=2, total price: $5.98\n"
 				+ "modifications=]\n"
-				+ "FoodData [food=Fries, quantity=2, price: $9.98\n"
+				+ "FoodData [food=Fries, quantity=2, total price: $9.98\n"
 				+ "modifications=No Salt]\n"
 				+ "Tip: $15.0\n"
 				+ "Total Cost: $50.94\n" );

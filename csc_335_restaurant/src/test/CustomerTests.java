@@ -50,7 +50,7 @@ class CustomerTests {
 		Customer person = new Customer("Bob");
 		Food food = new Food("Cheese Burger", FoodType.ENTREE, 6.59);
 		person.orderFood(food, 1, "None");
-		assertEquals(person.toString(), "Name: Bob, Order: FoodData [food=Cheese Burger, quantity=1, price: $6.59\nmodifications=None]"
+		assertEquals(person.toString(), "Name: Bob, Order: FoodData [food=Cheese Burger, quantity=1, total price: $6.59\nmodifications=None]"
 				+ "\nTip: $0.0\nTotal Cost: $6.59\n");
 	}
 }
