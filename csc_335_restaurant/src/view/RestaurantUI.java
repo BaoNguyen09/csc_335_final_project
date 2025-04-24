@@ -151,7 +151,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver {
         	// get the id of the table
         	int id = Integer.valueOf(selected.getId().substring(1));
         	// get the name of the server assigned to selected table
-        	controller.assignServer(selected.getServer(), id);
+        	controller.removeServer(selected.getServer(), id);
         } else {
             JOptionPane.showMessageDialog(this, "Select a table with an assigned server.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
