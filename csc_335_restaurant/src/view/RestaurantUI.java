@@ -2,30 +2,39 @@ package view;
 
 import model.Group;
 import model.Restaurant;
+import model.RestaurantObserver;
 import model.Server;
 import model.Table;
 
 import javax.swing.*;
+
+import controller.Controller;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RestaurantUI extends JFrame {
+public class RestaurantUI extends JFrame implements RestaurantObserver{
     private JList<String> serverList;
     private DefaultListModel<String> serverListModel;
     private JList<String> groupList;
     private DefaultListModel<String> groupListModel;
     private List<TableBox> tables;
     private Restaurant restaurant;
+    private Controller controller;
 
-    public RestaurantUI(Restaurant restaurant) {
+
+    public RestaurantUI(Restaurant restaurant, Controller controller) {
         super("Restaurant Floor Plan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
         setLocationRelativeTo(null);
-
+        this.controller = controller;
         this.restaurant = restaurant;
+        
+        // the restaurantUI relies on the restaurant model and data
+        restaurant.addRestaurantObserver(this);
 
         initComponents();
     }
@@ -202,22 +211,60 @@ public class RestaurantUI extends JFrame {
     private void addServer() {
         String name = JOptionPane.showInputDialog(this, "Enter server name:");
         if (name != null && !name.trim().isEmpty()) {
-            serverListModel.addElement(name.trim());
-            restaurant.addServer(name.trim());  // Assuming such a method exists
-        }
+        	
+        	// calling controller to call restaurant add server
+        	controller.addServer(name.trim());
+       }
     }
 
     private void addGroup() {
-        String sizeStr = JOptionPane.showInputDialog(this, "Enter group size:");
         try {
-            int size = Integer.parseInt(sizeStr);
-            Group group = new Group(size);  // Assuming constructor auto-generates ID
-            restaurant.addGroup(group);
-            populateGroupList(restaurant.getWaitlist());
+        	// We get group size input and names of the group members from user input
+            String sizeInput = JOptionPane.showInputDialog(this, "Enter number of people in the group:");
+            if (sizeInput == null) return;
+            int groupSize = Integer.parseInt(sizeInput);
+
+            if (groupSize <= 0) {
+                JOptionPane.showMessageDialog(this, "Group size must be positive.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // this sucessfully generates the arraylist of member names that we need
+            ArrayList<String> memberNames = new ArrayList<>();
+            for (int i = 1; i <= groupSize; i++) {
+                String name = JOptionPane.showInputDialog(this, "Enter name for member " + i + ":");
+                if (name == null || name.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                    i--;
+                    continue;
+                }
+                memberNames.add(name.trim());
+            }
+
+            /* Controller will take the input (ArrayList<String> memberNames
+             * and will give this information to the Backend restaurant call to 
+             * addGroup
+             */
+            controller.handleAddGroup(memberNames);
+
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid group size.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    /* RestaurantUI is an observer of the restaurant class, so whenever it is notified due to 
+     * a change in the backend model (restaurant), we will have to regenerate the groupList and waitlist.
+    */
+    @Override
+    public void onGroupUpdate() {
+        populateGroupList(restaurant.getWaitlist());
+    }
+    
+    @Override
+    public void onServerUpdate() {
+    	populateServerList(restaurant.getServers());
+    }
+    
 
     private void showSalesBoard() {
         SwingUtilities.invokeLater(() -> new SalesUI(restaurant).setVisible(true));

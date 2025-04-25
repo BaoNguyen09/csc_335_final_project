@@ -16,6 +16,10 @@ public class Restaurant {
     private Map<Integer, Group> activeGroups; // List of all groups being served
     private Menu menu; // Menu of available food items
     private Sales sales; // Tracks completed orders for reporting
+    
+    // This is all the observers of the restaurant class
+    private List<RestaurantObserver> restaurantObservers = new ArrayList<>();
+
 
     public Restaurant() {
         this.serverMap = new HashMap<>();
@@ -66,10 +70,12 @@ public class Restaurant {
             if (c != null) group.addPerson(c);
         }
         waitlist.put(group.getGroupId(), group);
+        notifyRestaurantObserversToAddGroup();
         return group.getGroupId();
     }
 
-    public void assignTable(int groupId, int tableNum) {
+
+	public void assignTable(int groupId, int tableNum) {
     	Group group = waitlist.getOrDefault(groupId, null);
         Table table = tableMap.getOrDefault(tableNum, null);
         if (group != null && table != null) {
@@ -91,9 +97,11 @@ public class Restaurant {
     	if (!serverMap.containsKey(name)) {
     		Server newServer = new Server(name);
             serverMap.put(name, newServer);
+            notifyRestaurantObserversToAddServer();
             return true;
     	}
     	return false;
+    	
     }
 
     public Server getTopTipEarner() {
@@ -241,4 +249,24 @@ public class Restaurant {
     private Group getGroupById(int groupId) {
         return activeGroups.getOrDefault(groupId, null);
     }
+    
+
+    // --------------------- Observer Methods ---------------------
+
+    public void addRestaurantObserver(RestaurantObserver o) {
+    	this.restaurantObservers.add(o);
+    }
+    
+
+    private void notifyRestaurantObserversToAddGroup() {
+    	for (RestaurantObserver observer : restaurantObservers) {
+            observer.onGroupUpdate();
+    	}
+	}
+    
+    private void notifyRestaurantObserversToAddServer() {
+    	for (RestaurantObserver observer : restaurantObservers) {
+            observer.onServerUpdate();
+    	}
+	}
 }
