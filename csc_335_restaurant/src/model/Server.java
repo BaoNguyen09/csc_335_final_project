@@ -20,6 +20,12 @@ public class Server {
 		this.tips = 0.0;
 	}
 	
+	public Server(Server other) {
+		tableNums = other.getTables();
+		name = other.getName();
+		tips = other.getTips();
+	}
+	
 	public void addTable(int tableNum) {
 		if (!tableNums.contains(tableNum)) {
 		    tableNums.add(tableNum);

@@ -17,12 +17,16 @@ public class Group {
 	private static int nextGroupId = 1;
 	private ArrayList<Customer> members;
 	private Map<String, Customer> customerMap;
+	private boolean onWaitlist;
+	private boolean orderTaken;
 	
 	/* The constructor method */
 	public Group() {
 		this.groupId = nextGroupId;
 		nextGroupId++;
 		this.members = new ArrayList<Customer>();
+		this.onWaitlist = true;
+		orderTaken = false;
 		customerMap = new HashMap<String, Customer>();
 	}
 	
@@ -34,6 +38,20 @@ public class Group {
 		// I will then implement methods to get this list and map
 		this.members = other.members;
 		this.customerMap = other.customerMap;
+		this.orderTaken = other.orderTaken();
+		this.onWaitlist = other.onWaitlist();
+	}
+	
+	public void beingServed() {
+		this.onWaitlist = false;
+	}
+	
+	public boolean onWaitlist() {
+		return onWaitlist;
+	}
+	
+	public boolean orderTaken() {
+		return orderTaken;
 	}
 	
 	/* Return total amount of food and tip */
@@ -62,6 +80,14 @@ public class Group {
 		return members.size();
 	}
 	
+	public List<String> getCustomersName() {
+		List<String> customers = new ArrayList<>();
+		for (Customer c: members) {
+			customers.add(c.getName());
+		}
+		return customers;
+	}
+	
 	/*
 	 * Gives a read-only view of this group’s customers.
 	 * Callers can do session.orderFood(...) but can’t modify the list
@@ -77,21 +103,32 @@ public class Group {
 	 * This method will handle the ordering directly. Still need to discuss how to
 	 * deal with customer with the same name (maybe add an id)
 	 */
-	public void placeOrder(String name, Food food, int qty, String mods) {
+	public boolean placeOrder(String name, Food food, int qty, String mods) {
 		Customer customer = customerMap.getOrDefault(name, null);
 		if (customer != null) {
-			customer.orderFood(food, qty, mods);
+			orderTaken = true;
+			return customer.orderFood(food, qty, mods);
 		}
+		return false;
 	}
 	
 	/*
 	 * This method will handle the paying bill directly.
 	 */
-	public void payBill(String name) {
+	public boolean payBill(String name) {
+		Customer customer = customerMap.getOrDefault(name, null);
+		if (customer != null && customer.payBill()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Bill getCustomerBill(String name) {
 		Customer customer = customerMap.getOrDefault(name, null);
 		if (customer != null) {
-			customer.payBill();
+			return new Bill(customer.getBill());
 		}
+		return null;
 	}
 	
 	/*
@@ -108,6 +145,17 @@ public class Group {
 		if (!members.contains(newMember)) { // only add if new member isn't already in the group
 			members.add(newMember);
 			customerMap.put(newMember.getName(), newMember);
+		}
+	}
+	
+	public void splitBillEvenly() {
+		double totalBill = 0;
+		for (Customer c: members) {
+			totalBill += c.getBill().getFoodCost();
+		}
+		double splitAmount = totalBill / members.size();
+		for (Customer c: members) {
+			c.splitBill(splitAmount);
 		}
 	}
 	

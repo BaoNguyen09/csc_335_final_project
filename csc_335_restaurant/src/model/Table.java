@@ -8,16 +8,13 @@ public class Table {
 		private int maxCapacity;
 		private Group group;
 		private boolean isOccupied;
-		private boolean takenOrder;
-		private Server assignedServer;
+		private String assignedServer;
 
 		public Table(int tableNum, int maxCapacity) {
 			this.tableNum = tableNum;
 			this.maxCapacity = maxCapacity;
 			group = null;
-			assignedServer = null;
-			takenOrder = false;
-			
+			assignedServer = "";			
 		}
 		
 		
@@ -33,67 +30,33 @@ public class Table {
 			return (group != null);
 		}
 		
-		public boolean hastakenOrder() {
-			return takenOrder;
-		}
 		
 		public String getAssignedServerName() {
-			if (assignedServer != null) {
-				return assignedServer.getName();
-			}
-			return "No Server";
+			return assignedServer;
 		}
 		
 		
-		/* The following will return the orderSessions of the group ig their order
-		 * has not been taken yet else it will return null.
-		 * 
-		 * How to take orders inside the view: 
-		 * List<OrderFood> sessions = table.takeOrder();
-				for (OrderFood personSession: sessions) {
-					personSession.orderFood(Food food, int quantity, String mods);
-					
-				}
-		 */
-		public List<OrderFood> takeOrder() {
-			// Can only take order if haven't taken order before or a group is at the table
-			if (!takenOrder & group != null) {
-				takenOrder = true;
-				return group.getOrderSessions();
-			}
-			return Collections.emptyList();
-			
-		}
-		
-		public String closeOrder() {
-		    if (takenOrder) {
-		        double earnings = group.getTotalBill();
-		        double tips = group.getTotalTip();
-		        assignedServer.addTips(tips);
-		        clearTable();
-		        return "Earnings: $" + String.format("%.2f", earnings) + " Tips: $" + String.format("%.2f", tips);
-		    }
-		    return "No Order";
-		}
+//		public String closeOrder() {
+//		    if (takenOrder) {
+//		        double earnings = group.getTotalBill();
+//		        double tips = group.getTotalTip();
+//		        clearTable();
+//		        return "Earnings: $" + String.format("%.2f", earnings) + " Tips: $" + String.format("%.2f", tips);
+//		    }
+//		    return "No Order";
+//		}
 			
 
 		
 		// Returns true if the server was successfully assigned, false otherwise
-		public boolean assignServer (Server server) {
-			if (assignedServer == null) {
-				assignedServer = server;
-				assignedServer.addTable(tableNum);
+		public boolean assignServer (String serverName) {
+			if (assignedServer == "") {
+				assignedServer = serverName;
 				return true;
 			}
 			return false;
 		}
 		
-		public void removeServer() {
-			if (assignedServer != null) {
-				assignedServer.removeTable(tableNum);
-				assignedServer = null;
-			}
-		}
 		
 		// Returns true if the group was successfully assigned, false otherwise
 		public boolean assignGroup (Group group) {
@@ -106,10 +69,14 @@ public class Table {
 			
 		}
 		
+		public int getGroupId() {
+			return group.getGroupId();
+		}
+		
 		public void clearTable() {
 			group = null;
 			isOccupied = false;
-			takenOrder = false;
+			assignedServer = "";
 		}
 
 		

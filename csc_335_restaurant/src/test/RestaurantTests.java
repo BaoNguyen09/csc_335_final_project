@@ -277,7 +277,7 @@ class RestaurantTests {
          // Check that sales weren't affected by invalid operations
          Map<Food, Integer> salesMap = restaurant.getSales();
          assertTrue(salesMap.isEmpty(), "Sales map should be empty after only invalid operations");
-     }
+    }
      
      @Test
      void testRemoveServer() {

@@ -15,6 +15,11 @@ public class Customer implements OrderFood{
 		this.bill = new Bill();
 	}
 	
+	public Customer(Customer other) {
+		name = other.getName();
+		bill = other.getBill();
+	}
+	
 	public void tip(double tip) {
 		bill.setTip(tip);
 	}
@@ -23,13 +28,18 @@ public class Customer implements OrderFood{
 		return new Bill(this.bill);
 	}
 	
-	public void payBill() {
+	public boolean payBill() {
 		// when bill is paid the reference is set to null
-		bill = null;
+		boolean result = bill.payBill();
+		return result;
+	}
+	
+	public void splitBill(double amount) {
+		bill.splitBill(amount);
 	}
 	
 	public boolean isBillPaid() {
-		return bill == null;
+		return bill.isPaid();
 	}
 	
 	public double getBillCost() {
@@ -40,13 +50,13 @@ public class Customer implements OrderFood{
 		return name;
 	}
 	
-	public void orderFood(Food food, int quantity, String mods) {
+	public boolean orderFood(Food food, int quantity, String mods) {
 		/*
 		 * the customer creates a foodData object when they order food which is then passed
 		 * to the bill through this function
 		 */
 		FoodData foodData = new FoodData(food.getName(), food.getType(), food.getPrice(), quantity, mods);
-		bill.addFoodItem(foodData);
+		return bill.addFoodItem(foodData);
 	}
 	
 	public String toString() {
