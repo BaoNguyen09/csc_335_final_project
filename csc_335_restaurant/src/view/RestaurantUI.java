@@ -175,6 +175,8 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             Table table = restaurant.getTableByNumber(tableNum);
 
             if (table.assignGroup(group)) {
+            	// HERE need to add controller logic and observer updating
+            	restaurant.assignTable(groupId, tableNum);
                 groupListModel.removeElement(groupEntry);
                 JOptionPane.showMessageDialog(this, "Group assigned to Table " + tableNum);
             } else {
@@ -190,19 +192,17 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         TableBox selected = getSelectedTable();
         if (selected != null) {
             int tableNum = selected.getTableNum();
-            Table table = restaurant.getTableByNumber(tableNum);
+            Table table = restaurant.getTableByNumberCopy(tableNum);
 
-            if (table.isOccupied() && !table.isOrderTaken()) {
-                Group group = table.getGroup();  // If this doesn't exist, adjust to lookup by groupId
-                group.markOrderTaken();
-
-                OrderingUI orderFrame = new OrderingUI();
+            if (table.isOccupied()) {
+                // Always open OrderingUI, it will handle whether to take order or pay
+            	int groupId = selected.getGroupId();
+                OrderingUI orderFrame = new OrderingUI(restaurant, controller, groupId);
                 orderFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 orderFrame.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Select an occupied table without an order.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Table is not occupied.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
-            refreshAllTables();
         } else {
             JOptionPane.showMessageDialog(this, "Select a table first.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
