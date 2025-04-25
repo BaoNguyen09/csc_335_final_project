@@ -32,8 +32,32 @@ public class Restaurant {
             tableMap.put(t.getTableNum(), t);
         }
     }
+    
+    // --------------------- Table Management ---------------------
+    public Map<Integer, Table> getTables(){
+    	return new HashMap<Integer, Table>(tableMap);
+    }
+
+    public Table getTableByNumberCopy(int tableNum) {
+        Table original = tableMap.get(tableNum);
+        if (original != null) {
+        	return new Table(original);
+        }
+       return null;
+    }
+    
+    
 
     // --------------------- Group Management ---------------------
+    
+    public Map<Integer, Group> getWaitlist(){
+    	return new HashMap<Integer, Group>(waitlist);
+    } 
+    
+    public Map<Integer, Group> getActiveGroups(){
+    	return new HashMap<Integer, Group>(activeGroups);
+    } 
+    
 
     public int addGroup(List<String> customerNames) {
         Group group = new Group();
@@ -58,6 +82,10 @@ public class Restaurant {
     }
 
     // --------------------- Server Management ---------------------
+    
+    public Map<String, Server> getServers() {
+    	return new HashMap<String, Server>(serverMap);
+    }
 
     public boolean addServer(String name) {
     	if (!serverMap.containsKey(name)) {
@@ -159,6 +187,10 @@ public class Restaurant {
 
     // --------------------- Sales Reporting ---------------------
 
+    public void registerSalesObserver(SalesObserver observer) {
+        this.sales.addObserver(observer);
+    }
+    
     public List<FoodData> getTopSellingItems() {
         return sales.sortMostSales();
     }
@@ -174,7 +206,7 @@ public class Restaurant {
 
     // --------------------- Helpers ---------------------
 
-    private Table getTableByNumber(int tableNum) {
+    public Table getTableByNumber(int tableNum) {
         return tableMap.getOrDefault(tableNum, null);
     }
     
