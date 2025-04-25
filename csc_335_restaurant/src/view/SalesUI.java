@@ -30,6 +30,7 @@ public class SalesUI extends JFrame implements SalesObserver {
         restaurant.registerSalesObserver(this);
 
         initComponents();
+        updateSalesUI();
     }
 
     private void initComponents() {
