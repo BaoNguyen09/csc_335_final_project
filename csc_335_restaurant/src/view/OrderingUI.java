@@ -2,15 +2,27 @@ package view;
 
 import model.Menu;
 import model.Food;
+import model.Group;
+import model.Restaurant;
+import model.Table;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import controller.Controller;
+
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.List;
 
 public class OrderingUI extends JFrame {
+    private Restaurant restaurant;
+    private Table table;
+    private Group group;
     private Menu menuModel;
+
     private JTable menuTable;
     private JTable orderTable;
     private DefaultTableModel menuTableModel;
@@ -20,25 +32,26 @@ public class OrderingUI extends JFrame {
     private JTextField quantityField;
     private JTextField modificationsField;
 
-    // Example group members
-    private List<String> groupMembers = Arrays.asList("Alice", "Bob", "Charlie");
+    private List<String> groupMembers;
 
-    public OrderingUI() {
-        super("Group Ordering System");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public OrderingUI(Restaurant restaurant, Controller controller, int groupId) {
+        super("Ordering System - Group " + groupId);
+        this.restaurant = restaurant;
+        this.group = restaurant.getActiveGroups().get(groupId);
+        this.menuModel = restaurant.getMenu();
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 500);
         setLocationRelativeTo(null);
 
-        menuModel = new Menu();
         initComponents();
     }
 
     private void initComponents() {
-        // Group Members List
+        groupMembers = group.getCustomersName();
         groupMembersList = new JList<>(groupMembers.toArray(new String[0]));
         groupMembersList.setBorder(BorderFactory.createTitledBorder("Group Members"));
 
-        // Quantity and Modifications
         quantityField = new JTextField("1", 5);
         modificationsField = new JTextField(10);
 
@@ -48,7 +61,7 @@ public class OrderingUI extends JFrame {
         inputPanel.add(new JLabel("Modifications:"));
         inputPanel.add(modificationsField);
 
-        // Menu table setup
+        // Menu Table
         String[] menuCols = {"Item", "Type", "Price"};
         menuTableModel = new DefaultTableModel(menuCols, 0) {
             @Override
@@ -60,7 +73,7 @@ public class OrderingUI extends JFrame {
         JScrollPane menuScroll = new JScrollPane(menuTable);
         menuScroll.setBorder(BorderFactory.createTitledBorder("Menu"));
 
-        // Order table setup
+        // Order Table
         String[] orderCols = {"Person", "Item", "Quantity", "Modifications", "Price"};
         orderTableModel = new DefaultTableModel(orderCols, 0) {
             @Override
@@ -76,6 +89,9 @@ public class OrderingUI extends JFrame {
 
         JButton removeButton = new JButton("Remove Order");
         removeButton.addActionListener(e -> removeFromOrder());
+        
+        JButton orderButton = new JButton("Order");
+        removeButton.addActionListener(e -> removeFromOrder());
 
         JButton payButton = new JButton("Pay");
         payButton.addActionListener(e -> processPayment());
@@ -85,13 +101,13 @@ public class OrderingUI extends JFrame {
         buttonPanel.add(removeButton);
         buttonPanel.add(payButton);
 
-        // Total label
+        // Total Label
         totalLabel = new JLabel("Total: $0.00");
         totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 14f));
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         totalPanel.add(totalLabel);
 
-        // Layout panels
+        // Layout Panels
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(groupMembersList, BorderLayout.CENTER);
         leftPanel.add(inputPanel, BorderLayout.NORTH);
@@ -131,6 +147,10 @@ public class OrderingUI extends JFrame {
         int modelRow = menuTable.convertRowIndexToModel(row);
         String itemName = (String) menuTableModel.getValueAt(modelRow, 0);
         Food f = menuModel.getItemFromMenu(itemName);
+
+        // Backend call to place order
+        restaurant.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
+
         double totalPrice = f.getPrice() * quantity;
         orderTableModel.addRow(new Object[]{person, f.getName(), quantity, modifications, String.format("$%.2f", totalPrice)});
         updateTotal();
@@ -153,15 +173,38 @@ public class OrderingUI extends JFrame {
     }
 
     private void processPayment() {
+
         if (orderTableModel.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "No orders to pay.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No orders placed.", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        JOptionPane.showMessageDialog(this, "Payment of " + totalLabel.getText() + " processed!", "Payment", JOptionPane.INFORMATION_MESSAGE);
-        orderTableModel.setRowCount(0);
-        updateTotal();
+
+        int choice = JOptionPane.showConfirmDialog(this, "Split bill evenly?", "Payment Option", JOptionPane.YES_NO_OPTION);
+        boolean paymentSuccess = false;
+
+        if (choice == JOptionPane.YES_OPTION) {
+            paymentSuccess = restaurant.splitAndPayBillEvenly(group.getGroupId());
+        } else {
+            String payer = groupMembers.get(0);  // Simplified: first member pays
+            paymentSuccess = restaurant.payBillFor(group.getGroupId(), payer);
+        }
+
+        if (paymentSuccess) {
+            String tipInput = JOptionPane.showInputDialog(this, "Enter total tip amount:");
+            try {
+                double tip = Double.parseDouble(tipInput);
+                for (String member : groupMembers) {
+                    restaurant.addTipFor(group.getGroupId(), member, tip / groupMembers.size());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Invalid tip entered. Skipping tip.", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+
+            restaurant.closeGroupOrder(table.getTableNum());
+            JOptionPane.showMessageDialog(this, "Payment completed. Table cleared!");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Payment failed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
-
-
-

@@ -12,12 +12,25 @@ public class Sales {
 	 * The itemRevenue HashMap keeps track of how many of each item is sold */
 	private HashMap<Food, Integer> sales;
 	private HashMap<Food, Double> itemRevenue;
+	private List<SalesObserver> observers = new ArrayList<>();
+
 	
 	// Constructor method
 	public Sales() {
 		sales = new HashMap<Food, Integer>();
 		itemRevenue = new HashMap<Food, Double>();
 	}
+	
+	public void addObserver(SalesObserver observer) {
+	    observers.add(observer);
+	}
+	
+	private void notifyObservers() {
+	    for (SalesObserver observer : observers) {
+	        observer.onSaleUpdate(0);
+	    }
+	}
+	
 	
 	
 	/* This method adds all the food in bill to the hashmap by checking the food name
@@ -33,6 +46,10 @@ public class Sales {
 			sales.put(copyFood, sales.get(copyFood) + food.getQuantity());
 		}
 		updateRevenueMap();
+		
+		// Will notify the salesUI that a new sales
+		// has been made
+		notifyObservers();
 	}
 	
 	// getter method for sales hashmap

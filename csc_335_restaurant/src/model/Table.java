@@ -18,6 +18,23 @@ public class Table {
 		}
 		
 		
+		// Copy constructor
+		public Table(Table other) {
+			this.tableNum = other.tableNum;
+			this.maxCapacity = other.maxCapacity;
+			
+			if (other.group != null) {
+				this.group = new Group(other.group);
+
+			} else {
+				this.group = null;
+			}
+			
+			this.isOccupied = other.isOccupied;
+			this.assignedServer = other.assignedServer;
+		}
+
+
 		public int getTableNum() {
 			return tableNum;
 		}
@@ -33,6 +50,10 @@ public class Table {
 		
 		public String getAssignedServerName() {
 			return assignedServer;
+		}
+		
+		public boolean isOrderTaken() {
+		    return (group != null) && group.orderTaken();
 		}
 		
 		

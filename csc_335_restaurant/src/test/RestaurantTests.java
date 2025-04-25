@@ -88,7 +88,6 @@ class RestaurantTests {
     void testOrderFoodAndPayUpdatesSales() {
         // Add a group
         final int groupId = restaurant.addGroup(Arrays.asList(aliceName));
-        System.out.println("group id: " + groupId);
         restaurant.assignTable(groupId, 1);
         restaurant.assignServerToTable(server1Name, groupId);
 
@@ -119,7 +118,6 @@ class RestaurantTests {
     @Test
     void testSplitBillUpdatesSales() {
         final int groupId = restaurant.addGroup(Arrays.asList(aliceName, bobName));
-        System.out.println("group id: " + groupId);
         assertTrue(restaurant.assignServerToTable(server1Name, groupId));
         restaurant.assignTable(groupId, 2);
         // Order food
@@ -201,7 +199,7 @@ class RestaurantTests {
          assertEquals(30.0, top.getTips(), 0.001);
     }
 
-     @Test
+    @Test
     void testGetTopTipEarnerNoServers() {
         // Create a restaurant with no servers added
         Restaurant emptyRestaurant = new Restaurant();
@@ -224,7 +222,6 @@ class RestaurantTests {
         assertEquals(1, salesBeforeClose.size());
 
         // Close the group/table
-        System.out.println("table num: " + tableNum);
         assertTrue(() -> restaurant.closeGroupOrder(tableNum)); // Assume table 1 was used
 
         // Sales data should persist after closing
@@ -277,5 +274,25 @@ class RestaurantTests {
          // Check that sales weren't affected by invalid operations
          Map<Food, Integer> salesMap = restaurant.getSales();
          assertTrue(salesMap.isEmpty(), "Sales map should be empty after only invalid operations");
+    }
+     
+     @Test
+     void testRemoveServer() {
+    	 restaurant.assignServerToTable(server1Name, 1);
+    	 assertTrue(restaurant.removeServerFromTable(server1Name, 1));
+    	 assertFalse(restaurant.removeServerFromTable(server1Name, 0));
+     }
+     
+     @Test
+     void testGetMenu() {
+    	 assertTrue(restaurant.getMenu() instanceof Menu);
+     }
+     
+     @Test
+     void testGetTableByTableIdCopy() {
+         Table tableFromRestaurant = restaurant.getTableByNumberCopy(1);
+         assertFalse(tableFromRestaurant == null);
+         assertEquals(1, tableFromRestaurant.getTableNum());
+
      }
 }

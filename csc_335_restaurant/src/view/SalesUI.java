@@ -2,58 +2,50 @@ package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import model.Restaurant;
+import model.SalesObserver;
+import model.Server;
+import model.Food;
+
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Map;
 
-public class SalesUI extends JFrame {
+public class SalesUI extends JFrame implements SalesObserver {
 
-    private JTable serverSalesTable;
     private JTable foodSalesTable;
+    private Restaurant restaurant;
+    private JLabel topTipServerLabel;
 
-    public SalesUI() {
+    public SalesUI(Restaurant restaurant) {
         super("Sales Board");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(900, 600);
+        setSize(700, 500);
         setLocationRelativeTo(null);
 
+        this.restaurant = restaurant;
+
+        topTipServerLabel = new JLabel("Top Tip Server: None");
+
+        restaurant.registerSalesObserver(this);
+
         initComponents();
+        updateSalesUI();
     }
 
     private void initComponents() {
-        // Dummy sales data
-        Map<String, Double> serverTips = new HashMap<>();
-        serverTips.put("Alice", 120.0);
-        serverTips.put("Bob", 200.0);
-        serverTips.put("Charlie", 150.0);
+        topTipServerLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        Map<String, int[]> foodSales = new HashMap<>();
-        // int[]{quantitySold, totalRevenue}
-        foodSales.put("Burger", new int[]{25, 250});
-        foodSales.put("Pasta", new int[]{40, 480});
-        foodSales.put("Salad", new int[]{30, 300});
-
-        // Server Sales Table (Tips Only)
-        String[] serverCols = {"Server", "Total Tips ($)"};
-        DefaultTableModel serverModel = new DefaultTableModel(serverCols, 0);
-        serverTips.forEach((name, tips) -> {
-            serverModel.addRow(new Object[]{name, String.format("%.2f", tips)});
-        });
-        serverSalesTable = new JTable(serverModel);
-        JScrollPane serverScroll = new JScrollPane(serverSalesTable);
-        serverScroll.setBorder(BorderFactory.createTitledBorder("Server Tips"));
-
-        // Food Sales Table
+        // Food Sales Table Setup
         String[] foodCols = {"Food Item", "Quantity Sold", "Total Revenue ($)"};
         DefaultTableModel foodModel = new DefaultTableModel(foodCols, 0);
-        foodSales.forEach((item, data) -> {
-            foodModel.addRow(new Object[]{item, data[0], String.format("%.2f", (double) data[1])});
-        });
         foodSalesTable = new JTable(foodModel);
+        foodSalesTable.setAutoCreateRowSorter(true);
+
         JScrollPane foodScroll = new JScrollPane(foodSalesTable);
         foodScroll.setBorder(BorderFactory.createTitledBorder("Food Sales"));
 
-        // Sorting Options
+        // Sorting Buttons
         JPanel sortPanel = new JPanel();
         JButton sortByQuantity = new JButton("Sort by Quantity Sold");
         JButton sortByRevenue = new JButton("Sort by Revenue");
@@ -61,18 +53,50 @@ public class SalesUI extends JFrame {
         sortByQuantity.addActionListener(e -> foodSalesTable.getRowSorter().toggleSortOrder(1));
         sortByRevenue.addActionListener(e -> foodSalesTable.getRowSorter().toggleSortOrder(2));
 
-        foodSalesTable.setAutoCreateRowSorter(true);
-
         sortPanel.add(sortByQuantity);
         sortPanel.add(sortByRevenue);
 
+        // Layout Setup
         JPanel foodPanel = new JPanel(new BorderLayout());
         foodPanel.add(foodScroll, BorderLayout.CENTER);
         foodPanel.add(sortPanel, BorderLayout.SOUTH);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, serverScroll, foodPanel);
-        splitPane.setResizeWeight(0.5);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(topTipServerLabel, BorderLayout.NORTH);
+        mainPanel.add(foodPanel, BorderLayout.CENTER);
 
-        add(splitPane, BorderLayout.CENTER);
+        add(mainPanel);
+    }
+
+    @Override
+    public void onSaleUpdate(double totalSales) {
+        updateSalesUI();
+    }
+
+    public void updateSalesUI() {
+        // Update Top Tip Server Label
+        Server topTipServer = restaurant.getTopTipEarner();
+        if (topTipServer != null) {
+            topTipServerLabel.setText("Top Tip Server: " + topTipServer.getName());
+        } else {
+            topTipServerLabel.setText("Top Tip Server: None");
+        }
+
+        // Update Food Sales Table
+        DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
+        foodModel.setRowCount(0);  // Clear existing rows
+
+        Map<Food, Integer> foodSales = restaurant.getSales();  // Assuming this returns the correct sales map
+
+        for (Food item : foodSales.keySet()) {
+            int quantity = foodSales.get(item);
+            double revenue = item.getPrice() * quantity;
+
+            foodModel.addRow(new Object[]{
+                item.getName(),
+                quantity,
+                String.format("%.2f", revenue)
+            });
+        }
     }
 }

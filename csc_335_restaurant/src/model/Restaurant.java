@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 public class Restaurant {
 	// Core components of the restaurant
@@ -17,6 +18,11 @@ public class Restaurant {
     private Menu menu; // Menu of available food items
     private Sales sales; // Tracks completed orders for reporting
 
+    
+    // This is all the observers of the restaurant class
+    private ArrayList<RestaurantObserver> rObservers;
+
+
     public Restaurant() {
         this.serverMap = new HashMap<>();
         this.tableMap = new HashMap<>();
@@ -24,6 +30,7 @@ public class Restaurant {
         this.activeGroups = new HashMap<>();
         this.menu = new Menu();
         this.sales = new Sales();
+        this.rObservers = new ArrayList<>();
         
         int[] tableCapacities = {2, 2, 4, 4, 10, 10}; // Initial table
         int numTables = tableCapacities.length;
@@ -32,8 +39,32 @@ public class Restaurant {
             tableMap.put(t.getTableNum(), t);
         }
     }
+    
+    // --------------------- Table Management ---------------------
+    public Map<Integer, Table> getTables(){
+    	return new HashMap<Integer, Table>(tableMap);
+    }
+
+    public Table getTableByNumberCopy(int tableNum) {
+        Table original = tableMap.get(tableNum);
+        if (original != null) {
+            return new Table(original);
+        } 
+        return null;
+    }
+    
+    
 
     // --------------------- Group Management ---------------------
+    
+    public Map<Integer, Group> getWaitlist(){
+    	return new HashMap<Integer, Group>(waitlist);
+    } 
+    
+    public Map<Integer, Group> getActiveGroups(){
+    	return new HashMap<Integer, Group>(activeGroups);
+    } 
+    
 
     public int addGroup(List<String> customerNames) {
         Group group = new Group();
@@ -42,10 +73,12 @@ public class Restaurant {
             if (c != null) group.addPerson(c);
         }
         waitlist.put(group.getGroupId(), group);
+        notifyRestaurantObserversToAddGroup();
         return group.getGroupId();
     }
 
-    public void assignTable(int groupId, int tableNum) {
+
+	public void assignTable(int groupId, int tableNum) {
     	Group group = waitlist.getOrDefault(groupId, null);
         Table table = tableMap.getOrDefault(tableNum, null);
         if (group != null && table != null) {
@@ -54,18 +87,25 @@ public class Restaurant {
             activeGroups.put(newlyActiveGroup.getGroupId(), newlyActiveGroup);
             table.assignGroup(newlyActiveGroup);
         	waitlist.remove(groupId);
+        	notifyAddGroupTable(groupId, tableNum);
         }
     }
 
     // --------------------- Server Management ---------------------
+    
+    public Map<String, Server> getServers() {
+    	return new HashMap<String, Server>(serverMap);
+    }
 
     public boolean addServer(String name) {
     	if (!serverMap.containsKey(name)) {
     		Server newServer = new Server(name);
             serverMap.put(name, newServer);
+            notifyRestaurantObserversToAddServer();
             return true;
     	}
     	return false;
+    	
     }
 
     public Server getTopTipEarner() {
@@ -81,6 +121,19 @@ public class Restaurant {
         if (server != null && table != null) {
         	server.addTable(tableNum);
         	table.assignServer(serverName);
+        	notifyAddServerTable(serverName, tableNum);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean removeServerFromTable(String serverName, int tableNum) {
+        Server server = serverMap.getOrDefault(serverName, null);
+        Table table = getTableByNumber(tableNum);
+        if (server != null && table != null) {
+        	server.removeTable(tableNum);
+        	table.assignServer(null);
+//        	notifyRemoveServerTable(tableNum);
             return true;
         }
         return false;
@@ -159,6 +212,10 @@ public class Restaurant {
 
     // --------------------- Sales Reporting ---------------------
 
+    public void registerSalesObserver(SalesObserver observer) {
+        this.sales.addObserver(observer);
+    }
+    
     public List<FoodData> getTopSellingItems() {
         return sales.sortMostSales();
     }
@@ -209,4 +266,47 @@ public class Restaurant {
     private Group getGroupById(int groupId) {
         return activeGroups.getOrDefault(groupId, null);
     }
+    
+
+    // --------------------- Observer Methods ---------------------
+
+    public void addRestaurantObserver(RestaurantObserver o) {
+    	this.rObservers.add(o);
+    }
+    
+    public void removeRestaurantObserver(RestaurantObserver o) {
+    	this.rObservers.remove(o);
+    }
+
+    private void notifyRestaurantObserversToAddGroup() {
+    	for (RestaurantObserver observer : rObservers) {
+            observer.onGroupUpdate();
+    	}
+	}
+    
+    private void notifyRestaurantObserversToAddServer() {
+    	for (RestaurantObserver observer : rObservers) {
+            observer.onServerUpdate();
+    	}
+	}
+
+    
+    private void notifyAddGroupTable(int groupNum, int tableNum) {
+    	for (RestaurantObserver o : this.rObservers) {
+    		o.assignGroupEvent(groupNum, tableNum);
+    	}
+    }
+    
+    private void notifyAddServerTable(String serverName, int tableNum) {
+    	for (RestaurantObserver o : this.rObservers) {
+    		o.assignServerEvent(serverName, tableNum);
+    	}
+    }
+    
+//    private void notifyRemoveServerTable(int tableNum) {
+//    	for (RestaurantObserver o : this.rObservers) {
+//    		o.removeServerEvent(tableNum);
+//    	}
+//    }
+    
 }
