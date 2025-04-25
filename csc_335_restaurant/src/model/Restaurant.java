@@ -45,9 +45,9 @@ public class Restaurant {
     public Table getTableByNumberCopy(int tableNum) {
         Table original = tableMap.get(tableNum);
         if (original != null) {
-        	return new Table(original);
-        }
-       return null;
+            return new Table(original);
+        } 
+        return null;
     }
     
     
