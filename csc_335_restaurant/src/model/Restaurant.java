@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 public class Restaurant {
 	// Core components of the restaurant
@@ -16,9 +17,10 @@ public class Restaurant {
     private Map<Integer, Group> activeGroups; // List of all groups being served
     private Menu menu; // Menu of available food items
     private Sales sales; // Tracks completed orders for reporting
+
     
     // This is all the observers of the restaurant class
-    private List<RestaurantObserver> restaurantObservers = new ArrayList<>();
+    private ArrayList<RestaurantObserver> rObservers;
 
 
     public Restaurant() {
@@ -28,6 +30,7 @@ public class Restaurant {
         this.activeGroups = new HashMap<>();
         this.menu = new Menu();
         this.sales = new Sales();
+        this.rObservers = new ArrayList<>();
         
         int[] tableCapacities = {2, 2, 4, 4, 10, 10}; // Initial table
         int numTables = tableCapacities.length;
@@ -84,6 +87,7 @@ public class Restaurant {
             activeGroups.put(newlyActiveGroup.getGroupId(), newlyActiveGroup);
             table.assignGroup(newlyActiveGroup);
         	waitlist.remove(groupId);
+        	notifyAddGroupTable(groupId, tableNum);
         }
     }
 
@@ -117,6 +121,19 @@ public class Restaurant {
         if (server != null && table != null) {
         	server.addTable(tableNum);
         	table.assignServer(serverName);
+        	notifyAddServerTable(serverName, tableNum);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean removeServerFromTable(String serverName, int tableNum) {
+        Server server = serverMap.getOrDefault(serverName, null);
+        Table table = getTableByNumber(tableNum);
+        if (server != null && table != null) {
+        	server.removeTable(tableNum);
+        	table.assignServer(null);
+//        	notifyRemoveServerTable(tableNum);
             return true;
         }
         return false;
@@ -254,19 +271,42 @@ public class Restaurant {
     // --------------------- Observer Methods ---------------------
 
     public void addRestaurantObserver(RestaurantObserver o) {
-    	this.restaurantObservers.add(o);
+    	this.rObservers.add(o);
     }
     
+    public void removeRestaurantObserver(RestaurantObserver o) {
+    	this.rObservers.remove(o);
+    }
 
     private void notifyRestaurantObserversToAddGroup() {
-    	for (RestaurantObserver observer : restaurantObservers) {
+    	for (RestaurantObserver observer : rObservers) {
             observer.onGroupUpdate();
     	}
 	}
     
     private void notifyRestaurantObserversToAddServer() {
-    	for (RestaurantObserver observer : restaurantObservers) {
+    	for (RestaurantObserver observer : rObservers) {
             observer.onServerUpdate();
     	}
 	}
+
+    
+    private void notifyAddGroupTable(int groupNum, int tableNum) {
+    	for (RestaurantObserver o : this.rObservers) {
+    		o.assignGroupEvent(groupNum, tableNum);
+    	}
+    }
+    
+    private void notifyAddServerTable(String serverName, int tableNum) {
+    	for (RestaurantObserver o : this.rObservers) {
+    		o.assignServerEvent(serverName, tableNum);
+    	}
+    }
+    
+//    private void notifyRemoveServerTable(int tableNum) {
+//    	for (RestaurantObserver o : this.rObservers) {
+//    		o.removeServerEvent(tableNum);
+//    	}
+//    }
+    
 }

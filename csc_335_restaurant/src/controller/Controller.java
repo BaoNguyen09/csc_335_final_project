@@ -22,11 +22,24 @@ public class Controller implements ActionListener{
 		restaurant.addServer(serverName);
 		
 	}
+
+	
+	public void assignServer(String name, int tableNum) {
+		restaurant.assignServerToTable(name, tableNum);
+	}
+	
+	public void assignGroup(int groupNum, int tableNum) {
+		restaurant.assignTable(groupNum, tableNum);
+	}
+	
+//	public void removeServer(String name, int tableNum) {
+//		restaurant.removeServerFromTable(name, tableNum);
+//	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
 }

@@ -12,6 +12,9 @@ import javax.swing.table.DefaultTableModel;
 import controller.Controller;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import java.util.List;
 
 public class OrderingUI extends JFrame {
@@ -85,6 +88,9 @@ public class OrderingUI extends JFrame {
         addButton.addActionListener(e -> addToOrder());
 
         JButton removeButton = new JButton("Remove Order");
+        removeButton.addActionListener(e -> removeFromOrder());
+        
+        JButton orderButton = new JButton("Order");
         removeButton.addActionListener(e -> removeFromOrder());
 
         JButton payButton = new JButton("Pay");
@@ -202,6 +208,3 @@ public class OrderingUI extends JFrame {
         }
     }
 }
-
-
-

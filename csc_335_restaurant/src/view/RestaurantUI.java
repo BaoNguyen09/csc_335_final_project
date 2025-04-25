@@ -111,7 +111,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         add(centerPanel, BorderLayout.CENTER);
     }
 
-    // ----------------- List Population -----------------
+    // ----------------- Server and Group List Population -----------------
 
     public void populateServerList(Map<String, Server> servers) {
         serverListModel.clear();
@@ -153,6 +153,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             Table table = restaurant.getTableByNumberCopy(tableNum);
 
             if (table.assignServer(serverName)) {
+            	controller.assignServer(serverName, tableNum);
                 JOptionPane.showMessageDialog(this, "Server assigned to Table " + tableNum);
             } else {
                 JOptionPane.showMessageDialog(this, "Table already has a server.", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -176,7 +177,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
 
             if (table.assignGroup(group)) {
             	// HERE need to add controller logic and observer updating
-            	restaurant.assignTable(groupId, tableNum);
+            	controller.assignGroup(groupId, tableNum);
                 groupListModel.removeElement(groupEntry);
                 JOptionPane.showMessageDialog(this, "Group assigned to Table " + tableNum);
             } else {
@@ -252,6 +253,10 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         }
     }
     
+    private void showSalesBoard() {
+        SwingUtilities.invokeLater(() -> new SalesUI(restaurant).setVisible(true));
+    }
+    
     /* RestaurantUI is an observer of the restaurant class, so whenever it is notified due to 
      * a change in the backend model (restaurant), we will have to regenerate the groupList and waitlist.
     */
@@ -265,10 +270,38 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     	populateServerList(restaurant.getServers());
     }
     
-
-    private void showSalesBoard() {
-        SwingUtilities.invokeLater(() -> new SalesUI(restaurant).setVisible(true));
+    @Override
+    public void assignServerEvent(String serverName, int tableNum) {
+        for (TableBox t : tables) {
+            if (t.getTableNum() == tableNum) {
+                t.refreshStatus();
+                break;
+            }
+        }
     }
+
+    @Override
+    public void assignGroupEvent(int groupId, int tableNum) {
+        for (TableBox t : tables) {
+            if (t.getTableNum() == tableNum) {
+                t.refreshStatus();
+                break;
+            }
+        }
+    }
+
+//	@Override
+//	public void removeServerEvent(int tableNum) {
+//		/* when the restaurant is updated and calls the update observer function
+//    	 * this function is called which updates the UI in accordance with the model
+//    	 */
+//		String tableId = "T" + tableNum;
+//    	for (TableBox t : tables) {
+//    		if (t.getId().equals(tableId)) {
+//    			t.setServer(null);
+//    		}
+//    	}
+//	}
+
+    
 }
-
-

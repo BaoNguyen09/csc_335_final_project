@@ -1,12 +1,10 @@
 package view;
 
-import java.awt.Menu;
-
 import javax.swing.SwingUtilities;
 
 import controller.Controller;
 import model.Restaurant;
-import model.Table;
+
 
 public class View {
 
@@ -19,5 +17,5 @@ public class View {
 
 
 	}
-
 }
+

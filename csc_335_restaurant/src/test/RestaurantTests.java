@@ -199,7 +199,7 @@ class RestaurantTests {
          assertEquals(30.0, top.getTips(), 0.001);
     }
 
-     @Test
+    @Test
     void testGetTopTipEarnerNoServers() {
         // Create a restaurant with no servers added
         Restaurant emptyRestaurant = new Restaurant();
@@ -274,6 +274,18 @@ class RestaurantTests {
          // Check that sales weren't affected by invalid operations
          Map<Food, Integer> salesMap = restaurant.getSales();
          assertTrue(salesMap.isEmpty(), "Sales map should be empty after only invalid operations");
+    }
+     
+     @Test
+     void testRemoveServer() {
+    	 restaurant.assignServerToTable(server1Name, 1);
+    	 assertTrue(restaurant.removeServerFromTable(server1Name, 1));
+    	 assertFalse(restaurant.removeServerFromTable(server1Name, 0));
+     }
+     
+     @Test
+     void testGetMenu() {
+    	 assertTrue(restaurant.getMenu() instanceof Menu);
      }
      
      @Test

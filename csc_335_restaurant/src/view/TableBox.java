@@ -55,10 +55,17 @@ public class TableBox extends JPanel {
 
     public void refreshStatus() {
         Table table = restaurant.getTableByNumberCopy(tableNum);
+
         if (table == null || !table.isOccupied()) {
+            // Table doesn't exist or is vacant
             setBackground(Color.WHITE);
-            infoLabel.setText("<html>Server: None<br>Group: None</html>");
+            groupId = 0;  // Reset groupId since no group is assigned
+            String serverName = (table != null) ? table.getAssignedServerName() : "None";
+
+            infoLabel.setText("<html>Server: " + (serverName.isEmpty() ? "None" : serverName) +
+                              "<br>Group: None</html>");
         } else {
+            // Table is occupied
             String serverName = table.getAssignedServerName();
             groupId = table.getGroupId();
 
