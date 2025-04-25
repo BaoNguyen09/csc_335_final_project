@@ -18,9 +18,11 @@ public class TableBox extends JPanel {
     private JLabel infoLabel;
 
     private boolean selected = false;
+    private int groupId;
 
     public TableBox(int tableNum, Restaurant restaurant) {
         this.tableNum = tableNum;
+        this.groupId = 0;
         this.restaurant = restaurant;
 
         setPreferredSize(new Dimension(120, 100));
@@ -53,7 +55,7 @@ public class TableBox extends JPanel {
             infoLabel.setText("<html>Server: None<br>Group: None</html>");
         } else {
             String serverName = table.getAssignedServerName();
-            int groupId = table.getGroupId();
+            groupId = table.getGroupId();
 
             if (table.isOrderTaken()) {
                 setBackground(Color.YELLOW);
@@ -69,6 +71,10 @@ public class TableBox extends JPanel {
 
     public int getTableNum() {
         return tableNum;
+    }
+    
+    public int getGroupId() {
+        return groupId;
     }
 
     public boolean isSelected() {
