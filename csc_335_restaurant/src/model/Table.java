@@ -22,7 +22,14 @@ public class Table {
 		public Table(Table other) {
 			this.tableNum = other.tableNum;
 			this.maxCapacity = other.maxCapacity;
-			this.group = other.group;
+			
+			if (other.group != null) {
+				this.group = new Group(other.group);
+
+			} else {
+				this.group = null;
+			}
+			
 			this.isOccupied = other.isOccupied;
 			this.assignedServer = other.assignedServer;
 		}

@@ -29,7 +29,12 @@ public class TableBox extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         setLayout(new BorderLayout());
 
-        JLabel titleLabel = new JLabel("Table " + tableNum, SwingConstants.CENTER);
+        // 🔹 Fetch the table and get its capacity
+        Table table = restaurant.getTableByNumberCopy(tableNum);
+        int capacity = (table != null) ? table.getMaxCapacity() : 0;
+
+        // 🔹 Display table number and capacity in the title
+        JLabel titleLabel = new JLabel("Table " + tableNum + " (Capacity: " + capacity + ")", SwingConstants.CENTER);
         add(titleLabel, BorderLayout.NORTH);
 
         infoLabel = new JLabel("", SwingConstants.CENTER);
@@ -49,7 +54,7 @@ public class TableBox extends JPanel {
     }
 
     public void refreshStatus() {
-        Table table = restaurant.getTableByNumber(tableNum);
+        Table table = restaurant.getTableByNumberCopy(tableNum);
         if (table == null || !table.isOccupied()) {
             setBackground(Color.WHITE);
             infoLabel.setText("<html>Server: None<br>Group: None</html>");

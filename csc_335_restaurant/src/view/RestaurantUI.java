@@ -150,7 +150,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
 
         if (selected != null && serverName != null) {
             int tableNum = selected.getTableNum();
-            Table table = restaurant.getTableByNumber(tableNum);
+            Table table = restaurant.getTableByNumberCopy(tableNum);
 
             if (table.assignServer(serverName)) {
                 JOptionPane.showMessageDialog(this, "Server assigned to Table " + tableNum);
@@ -172,7 +172,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             int groupId = Integer.parseInt(groupEntry.split(" ")[1]);
 
             Group group = restaurant.getWaitlist().get(groupId);
-            Table table = restaurant.getTableByNumber(tableNum);
+            Table table = restaurant.getTableByNumberCopy(tableNum);
 
             if (table.assignGroup(group)) {
             	// HERE need to add controller logic and observer updating

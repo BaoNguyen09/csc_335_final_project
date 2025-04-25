@@ -214,7 +214,7 @@ public class Restaurant {
 
     // --------------------- Helpers ---------------------
 
-    public Table getTableByNumber(int tableNum) {
+    private Table getTableByNumber(int tableNum) {
         return tableMap.getOrDefault(tableNum, null);
     }
     
