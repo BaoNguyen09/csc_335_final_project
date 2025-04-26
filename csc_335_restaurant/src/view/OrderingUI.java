@@ -19,6 +19,7 @@ import java.util.List;
 
 public class OrderingUI extends JFrame {
     private Restaurant restaurant;
+    private Controller controller;
     private int tableNum;
     private Group group;
     private Menu menuModel;
@@ -37,6 +38,7 @@ public class OrderingUI extends JFrame {
     public OrderingUI(Restaurant restaurant, Controller controller, int groupId, int tableNum) {
         super("Ordering System - Group " + groupId);
         this.restaurant = restaurant;
+        this.controller = controller;
         this.group = restaurant.getActiveGroups().get(groupId);
         this.tableNum = tableNum;
         this.menuModel = restaurant.getMenu();
@@ -184,10 +186,10 @@ public class OrderingUI extends JFrame {
         boolean paymentSuccess = false;
 
         if (choice == JOptionPane.YES_OPTION) {
-            paymentSuccess = restaurant.splitAndPayBillEvenly(group.getGroupId());
+            paymentSuccess = controller.splitAndPayBillEvenly(group.getGroupId());
         } else { // pay individually
         	for (String payer: groupMembers) {
-        		boolean paymentStatus = restaurant.payBillFor(group.getGroupId(), payer);
+        		boolean paymentStatus = controller.payBillFor(group.getGroupId(), payer);
         		try {
         			if (!paymentStatus) throw new Exception();
         		} catch(Exception e) {
@@ -203,11 +205,11 @@ public class OrderingUI extends JFrame {
                 for (String member : groupMembers) {
                 	String tipInput = JOptionPane.showInputDialog(this, String.format("Enter tip amount for %s:", member));
                 	double tip = Double.parseDouble(tipInput);
-                    boolean tippingStatus = restaurant.addTipFor(group.getGroupId(), member, tip);
+                    boolean tippingStatus = controller.addTipFor(group.getGroupId(), member, tip);
                     if (!tippingStatus) throw new Exception("Invalid tip entered. Skipping tip.");
                 }
-                String paymentSummary = restaurant.getPaymentSummary(group.getGroupId());
-	            restaurant.closeGroupOrder(tableNum);
+                String paymentSummary = controller.getPaymentSummary(group.getGroupId());
+	            if (!controller.closeGroupOrder(tableNum)) throw new Exception("Can't close order. Check if this table has a valid group and server");
 	            if (paymentSummary.contains("Error")) throw new Exception(paymentSummary);
 	            JOptionPane.showMessageDialog(this, paymentSummary);
 	            dispose();

@@ -20,16 +20,34 @@ public class Controller implements ActionListener{
 
     public void addServer(String serverName) {
 		restaurant.addServer(serverName);
-		
 	}
 
-	
 	public void assignServer(String name, int tableNum) {
 		restaurant.assignServerToTable(name, tableNum);
 	}
 	
 	public void assignGroup(int groupNum, int tableNum) {
 		restaurant.assignTable(groupNum, tableNum);
+	}
+	
+	public boolean splitAndPayBillEvenly(int groupId) {
+		return restaurant.splitAndPayBillEvenly(groupId);
+	}
+	
+	public boolean payBillFor(int groupId, String name) {
+		return restaurant.payBillFor(groupId, name);
+	}
+	
+	public boolean addTipFor(int groupId, String name, double amount) {
+		return restaurant.addTipFor(groupId, name, amount);
+	}
+	
+	public String getPaymentSummary(int groupId) {
+		return restaurant.getPaymentSummary(groupId);
+	}
+	
+	public boolean closeGroupOrder(int tableNum) {
+		return restaurant.closeGroupOrder(tableNum);
 	}
 	
 //	public void removeServer(String name, int tableNum) {
