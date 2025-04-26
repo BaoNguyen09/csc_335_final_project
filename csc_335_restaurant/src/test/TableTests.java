@@ -51,6 +51,30 @@ class TableTests {
 		assertFalse(tableOne.assignServer("Bill"));
 	}
 	
+	@Test
+	void testCopyTable() {
+		Group group1 = new Group();
+		Customer Alice = new Customer("Alice");
+		Customer Bill = new Customer("Bill");
+		Customer Lily = new Customer("Lily");
+		group1.addPerson(Alice);
+		group1.addPerson(Bill);
+		group1.addPerson(Lily);
+		
+		Table tableOne = new Table(1, 10);
+		assertTrue(tableOne.assignServer( "Jane"));
+		
+		tableOne.assignGroup(group1);
+		
+		Table sameTable = new Table(tableOne);
+		
+		assertEquals(tableOne.isOrderTaken(), sameTable.isOrderTaken());
+	
+		
+		
+		assertEquals(tableOne.getGroupId(), sameTable.getGroupId() );
+	}
+	
 //	@Test
 //	void testRemoveServer() {
 //		Table tableOne = new Table(1, 10);

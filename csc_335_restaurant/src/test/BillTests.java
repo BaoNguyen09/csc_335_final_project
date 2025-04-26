@@ -115,6 +115,31 @@ class BillTests {
 		newBill.setTip(15.00);
 		
 		Bill copyBill = new Bill(newBill);
-		assertEquals(newBill.toString(), copyBill.toString());
+		assertEquals(newBill, copyBill);
+	}
+	
+	@Test
+	void testBillGetters() {
+		Bill newBill = new Bill();
+		FoodData hamburger = new FoodData("Hamburger", FoodType.ENTREE, 9.99, 2, "No Tomatoes");
+		
+		FoodData milkshake = new FoodData("Milkshake", FoodType.DRINK, 2.99, 2, "");
+		
+		FoodData fries = new FoodData("Fries", FoodType.SIDE, 4.99, 2, "No Salt");
+		
+		newBill.addFoodItem(hamburger);
+		newBill.addFoodItem(milkshake);
+		newBill.addFoodItem(fries);
+		
+		newBill.setTip(15.00);
+		
+		newBill.payBill();
+		
+		assertEquals(50.94, newBill.getAmountPaid());
+		assertTrue(newBill.isPaid());
+		
+		assertEquals(15.00, newBill.getTip());
+		assertEquals(35.94, newBill.getFoodCost());
+		
 	}
 }

@@ -44,7 +44,9 @@ class RestaurantTests {
         restaurant.addServer(server1Name);
         restaurant.addServer(server2Name);
     }
-
+    
+    	
+    
     @Test
     void testConstructorRuns() {
         // Very basic test: can we create an instance?
@@ -113,6 +115,10 @@ class RestaurantTests {
         assertEquals(1, topMoney.size());
         assertEquals(burgerData, topMoney.get(0));
         assertEquals(2 * burger.getPrice(), topMoney.get(0).getTotalPrice(), 0.001);
+       
+        assertEquals(restaurant.getPaymentSummary(1), "Payment Summary for Group 1\n"
+        		+ "1. Alice\n"
+        		+ "  - Total: $20.00, Tip: $0.00, Status: Paid\n");
     }
 
     @Test
@@ -196,7 +202,12 @@ class RestaurantTests {
         assertNotNull(top);
         // Server2 should have 30, Server1 should have 10
         assertEquals(server2Name, top.getName());
-         assertEquals(30.0, top.getTips(), 0.001);
+        assertEquals(30.0, top.getTips(), 0.001);
+        
+      
+        //show top Earner
+        // it should be Server 2 with earnings of $30.00
+        restaurant.showTopTipEarner();
     }
 
     @Test
@@ -228,15 +239,19 @@ class RestaurantTests {
         Map<Food, Integer> salesAfterClose = restaurant.getSales();
         assertEquals(1, salesAfterClose.size(), "Sales data should remain after group close");
         assertEquals(1, salesAfterClose.get(burger));
-
+        
+        
         // Add another group (ID 2), order same item, pay, close
         final int group2Id = restaurant.addGroup(Arrays.asList(bobName)); // Group 2 -> Table 1 assumed (now free)
         assertTrue(restaurant.assignServerToTable(server1Name, tableNum));
         restaurant.assignTable(group2Id, tableNum);
         restaurant.orderFoodFor(group2Id, bobName, burger, 2, "");
+        
+        assertEquals(restaurant.getActiveGroups().keySet().size(), 1 );
+        
         restaurant.payBillFor(group2Id, bobName);
         restaurant.closeGroupOrder(tableNum); // Close table 1 again
-
+        
         // Check combined sales
         Map<Food, Integer> finalSales = restaurant.getSales();
         assertEquals(1, finalSales.size(), "Sales map should still only contain burger");
@@ -247,6 +262,19 @@ class RestaurantTests {
         FoodData burgerData = new FoodData(burger, 3, "");
         assertEquals(burgerData, topSelling.get(0));
         assertEquals(3, topSelling.get(0).getQuantity());
+        
+        assertEquals(restaurant.getSalesObject().toString(), "Item Sales:\n"
+        		+ "Burger: 3\n");
+        /* Should output: 
+         * Item Sales:
+         * Burger: 3
+         * Top tip earner: Server2 ($30.0)
+         * */
+        restaurant.showSalesReport();
+        
+        assertEquals(restaurant.getActiveGroups().keySet().size(), 0 );
+        assertEquals(restaurant.getWaitlist().keySet().size(), 0 );
+       
     }
 
      @Test
@@ -279,6 +307,7 @@ class RestaurantTests {
      @Test
      void testRemoveServer() {
     	 restaurant.assignServerToTable(server1Name, 1);
+    	 assertEquals(restaurant.getServers().keySet().size(), 2);
     	 assertTrue(restaurant.removeServerFromTable(server1Name, 1));
     	 assertFalse(restaurant.removeServerFromTable(server1Name, 0));
      }
