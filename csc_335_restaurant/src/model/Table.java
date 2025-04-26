@@ -10,6 +10,9 @@ public class Table {
 		private boolean isOccupied;
 		private String assignedServer;
 
+		/*
+	  	 * @pre tableNum != null maxCapacity != null
+	  	 */
 		public Table(int tableNum, int maxCapacity) {
 			this.tableNum = tableNum;
 			this.maxCapacity = maxCapacity;
@@ -19,6 +22,9 @@ public class Table {
 		
 		
 		// Copy constructor
+		/*
+	  	 * @pre other != null
+	  	 */
 		public Table(Table other) {
 			this.tableNum = other.tableNum;
 			this.maxCapacity = other.maxCapacity;
@@ -57,18 +63,11 @@ public class Table {
 		}
 		
 		
-//		public String closeOrder() {
-//		    if (takenOrder) {
-//		        double earnings = group.getTotalBill();
-//		        double tips = group.getTotalTip();
-//		        clearTable();
-//		        return "Earnings: $" + String.format("%.2f", earnings) + " Tips: $" + String.format("%.2f", tips);
-//		    }
-//		    return "No Order";
-//		}
 			
 
-		
+		/*
+	  	 * @pre severName != null tableNum != null
+	  	 */
 		// Returns true if the server was successfully assigned, false otherwise
 		public boolean assignServer (String serverName) {
 			if (assignedServer == "") {
@@ -78,7 +77,9 @@ public class Table {
 			return false;
 		}
 		
-		
+		/*
+	  	 * @pre group != null
+	  	 */
 		// Returns true if the group was successfully assigned, false otherwise
 		public boolean assignGroup (Group group) {
 			if (!isOccupied & group.getGroupSize() <= maxCapacity) {

@@ -21,6 +21,9 @@ public class Sales {
 		itemRevenue = new HashMap<Food, Double>();
 	}
 	
+	/*
+  	 * @pre observer != null
+  	 */
 	public void addObserver(SalesObserver observer) {
 	    observers.add(observer);
 	}
@@ -31,6 +34,9 @@ public class Sales {
 	    }
 	}
 	
+	/*
+  	 * @pre other != null
+  	 */
 	public Sales(Sales other) {
 		sales = new HashMap<Food, Integer>(other.sales);
 		itemRevenue = new HashMap<Food, Double>(other.itemRevenue);
@@ -38,6 +44,8 @@ public class Sales {
 	
 	/* This method adds all the food in bill to the hashmap by checking the food name
 	 * and adding the quantity
+	 * 
+	 * bill != null
 	 *  */
 	public void addCompletedOrder(Bill bill) {
 		for (FoodData food: bill.getOrder()) {

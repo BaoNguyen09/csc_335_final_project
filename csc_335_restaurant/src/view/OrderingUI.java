@@ -40,7 +40,11 @@ public class OrderingUI extends JFrame {
         this.group = controller.getActiveGroups().get(groupId);
         this.tableNum = tableNum;
         this.menuModel = controller.getMenu();
-
+        
+        /*
+         * ChatGPT was used in this portion of the code to generate the Jframe window
+         * and to initialize the Swing components like JLabel.
+         */
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 500);
         setLocationRelativeTo(null);
@@ -49,6 +53,10 @@ public class OrderingUI extends JFrame {
     }
 
     private void initComponents() {
+    	/*
+         * ChatGPT was used in this entire init portion of the code to generate all
+         * swing components that were needed and the design of the GUI.
+         */
         groupMembers = group.getCustomersName();
         groupMembersList = new JList<>(groupMembers.toArray(new String[0]));
         groupMembersList.setBorder(BorderFactory.createTitledBorder("Group Members"));
@@ -121,7 +129,12 @@ public class OrderingUI extends JFrame {
         add(centerSplit, BorderLayout.CENTER);
         add(totalPanel, BorderLayout.SOUTH);
     }
-
+    
+    /*
+     * In the following functions, ChatGPT was used in only the JOptionPane message to provide some
+     * error checking.
+     */
+    
     private void loadMenuItems() {
         for (Food f : menuModel.getMenuItems()) {
             menuTableModel.addRow(new Object[]{f.getName(), f.getType().toString(), String.format("$%.2f", f.getPrice())});
