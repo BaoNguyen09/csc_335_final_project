@@ -3,8 +3,9 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Map;
 
-import model.Restaurant;
+import model.*;
 
 public class Controller implements ActionListener{
 	
@@ -12,6 +13,14 @@ public class Controller implements ActionListener{
 
     public Controller(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+    
+    public Map<Integer, Group> getActiveGroups() {
+    	return restaurant.getActiveGroups();
+    }
+    
+    public Menu getMenu() {
+    	return restaurant.getMenu();
     }
 
     public void handleAddGroup(ArrayList<String> memberNames) {
@@ -32,6 +41,10 @@ public class Controller implements ActionListener{
 	
 	public boolean splitAndPayBillEvenly(int groupId) {
 		return restaurant.splitAndPayBillEvenly(groupId);
+	}
+	
+	public boolean orderFoodFor(int groupId, String name, Food f, int qty, String mods) {
+		return restaurant.orderFoodFor(groupId, name, f, qty, mods);
 	}
 	
 	public boolean payBillFor(int groupId, String name) {
