@@ -207,6 +207,9 @@ class SalesTests {
 		
 		
 		Sales trackSales = new Sales();
+		Sales copyTrackSales = new Sales(trackSales);
+		
+		assertTrue(trackSales.getSales().equals(copyTrackSales.getSales()));
 		
 		trackSales.addCompletedOrder(newBill);
 		trackSales.addCompletedOrder(newBill2);

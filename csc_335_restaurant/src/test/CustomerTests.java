@@ -53,4 +53,33 @@ class CustomerTests {
 		assertEquals(person.toString(), "Name: Bob, Order: FoodData [food=Cheese Burger, quantity=1, total price: $6.59\nmodifications=None]"
 				+ "\nTip: $0.0\nTotal Cost: $6.59\n");
 	}
+
+	
+	
+	@Test
+	void testCopyConstructor() {
+		Customer person = new Customer("Bob");
+		Customer copyPerson = new Customer(person);
+		
+		assertFalse(person == copyPerson);
+		assertTrue(person.equals(copyPerson));
+		
+	}
+	
+	@Test
+	void testSplitBill() {
+		Customer person = new Customer("Bob");
+		Food food = new Food("Cheese Burger", FoodType.ENTREE, 6.59);
+		person.orderFood(food, 1, "None");
+		
+		Customer person2 = new Customer("Jim");
+		Food food2 = new Food("Cheese Burger", FoodType.ENTREE, 6.59);
+		person.orderFood(food2, 1, "None");
+		
+		person.splitBill(13.18);
+		
+		assertTrue(person.isBillPaid());
+		
+		
+	}
 }

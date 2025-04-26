@@ -1,5 +1,8 @@
 package test;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Assertions;
@@ -43,5 +46,16 @@ class ServerTests {
 		expectedTables.remove(Integer.valueOf(4));
 		Assertions.assertEquals(s.getTables().size(), 2);
 		Assertions.assertEquals(expectedTables, s.getTables());
+	}
+	
+	@Test
+	void testCopyConstructor() {
+		Server s = new Server("Christopher");
+		s.addTips(10.49);
+		
+		Server copyServer = new Server(s);
+		
+		assertEquals(s.getTips(), copyServer.getTips());
+		assertEquals(s.getName(), copyServer.getName());
 	}
 }
