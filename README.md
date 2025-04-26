@@ -47,8 +47,7 @@ busiest times, etc.
 - `cd csc_335_restaurant`
 
 2. **Compile the Project**
-If using terminal:
-javac -d bin src/**/*.java
+- If using terminal: `javac -d bin src/**/*.java`
 
 3. **Run the Application**
 From the `bin` directory:
