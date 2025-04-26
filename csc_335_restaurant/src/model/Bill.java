@@ -24,9 +24,13 @@ public class Bill {
 		isPaid = false;
 		amountPaid = 0;
 	}
+	
 
+	/* Copy constructor
+	 * 
+	 * @pre other != null
+	 * */
 
-	/* Copy constructor*/
 	public Bill(Bill other) {
 		this.foodCost = other.foodCost;
 		this.tip = other.tip;
@@ -38,7 +42,11 @@ public class Bill {
 
 	
 	/* This method adds a foodItem to order, it creates a new foodItem and adds it and each time
-	 * this method runs it updates foodCost */
+	 * this method runs it updates foodCost 
+	 * 
+	 * @pre item != null
+	 * 
+	 * */
 	public boolean addFoodItem(FoodData item) {
 		if (order.add(item)) {
 			this.foodCost += item.getTotalPrice();
@@ -47,7 +55,9 @@ public class Bill {
 		return false;
 	}
 	
-	/* Sets the tip */ 
+	/* Sets the tip 
+	 * @pre money != null
+	 * */ 
 	public void setTip(double money) {
 		this.tip = money;
 	}
@@ -93,6 +103,12 @@ public class Bill {
 		return false;
 	}
 	
+	/* This will set the amount of the customer bill to
+	 * be evenly split among all customers in the group.
+	 * 
+	 * @pre amount != null
+	 * 
+	 */
 	public void splitBill(double amount) {
 		amountPaid = amount;
 		isPaid = true;

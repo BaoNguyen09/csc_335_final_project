@@ -30,7 +30,10 @@ public class Group {
 		customerMap = new HashMap<String, Customer>();
 	}
 	
-	/* Copy constructor*/
+	/* Copy constructor
+	 * 
+	 * @pre other != null
+	 */
 	public Group(Group other) {
 		this.groupId = other.groupId;
 		// two line below won't work because it tries to access private variables
@@ -102,6 +105,8 @@ public class Group {
 	/*
 	 * This method will handle the ordering directly. Still need to discuss how to
 	 * deal with customer with the same name (maybe add an id)
+	 * 
+	 * @pre name != null, food != null, qty != null, mods != null
 	 */
 	public boolean placeOrder(String name, Food food, int qty, String mods) {
 		Customer customer = customerMap.getOrDefault(name, null);
@@ -114,6 +119,8 @@ public class Group {
 	
 	/*
 	 * This method will handle the paying bill directly.
+	 * 
+	 * @pre name != null
 	 */
 	public boolean payBill(String name) {
 		Customer customer = customerMap.getOrDefault(name, null);
@@ -133,6 +140,7 @@ public class Group {
 	
 	/*
 	 * This method will handle the tipping directly.
+	 * @pre name != null, amount != null
 	 */
 	public void addTip(String name, double amount) {
 		Customer customer = customerMap.getOrDefault(name, null);
@@ -141,6 +149,9 @@ public class Group {
 		}
 	}
 	
+	/*
+	 * @pre newMember != null
+	 */
 	public void addPerson(Customer newMember) {
 		if (!members.contains(newMember)) { // only add if new member isn't already in the group
 			members.add(newMember);

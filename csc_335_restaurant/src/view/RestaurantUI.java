@@ -25,6 +25,10 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
 
 
     public RestaurantUI(Controller controller) {
+        /*
+         * ChatGPT was used in this portion of the code to generate the Jframe window
+         * and to initialize the Swing components like JLabel.
+         */
         super("Restaurant Floor Plan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
@@ -38,6 +42,11 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     }
 
     private void initComponents() {
+        /*
+         * ChatGPT was used in this entire init portion of the code to generate all
+         * swing components that were needed.
+         */
+    	
         // Left Panel Setup
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -69,7 +78,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         JButton assignGroupBtn = new JButton("Assign Group");
         assignGroupBtn.addActionListener(e -> assignGroup());
 
-        JButton takeOrderBtn = new JButton("Take Order");
+        JButton takeOrderBtn = new JButton("Take/Pay Order");
         takeOrderBtn.addActionListener(e -> takeOrder());
 
         JButton salesBoardBtn = new JButton("Sales Board");
@@ -141,6 +150,10 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     }
 
     // ----------------- Button Actions -----------------
+    /*
+     * ChatGPT was used in only the JOptionPane message to provide some
+     * error checking.
+     */
 
     private void assignServer() {
         TableBox selected = getSelectedTable();

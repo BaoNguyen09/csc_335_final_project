@@ -2,6 +2,7 @@ package view;
 
 import model.Menu;
 import model.Food;
+import model.FoodData;
 import model.Group;
 import model.Restaurant;
 import model.Table;
@@ -31,6 +32,8 @@ public class OrderingUI extends JFrame {
     private JList<String> groupMembersList;
     private JTextField quantityField;
     private JTextField modificationsField;
+    private List<OrderItem> pendingOrder = new ArrayList<>();
+    private boolean placedOrder;
 
     private List<String> groupMembers;
 
@@ -40,7 +43,13 @@ public class OrderingUI extends JFrame {
         this.group = controller.getActiveGroups().get(groupId);
         this.tableNum = tableNum;
         this.menuModel = controller.getMenu();
-
+        // This is so that we can trigger a different view 
+        placedOrder = group.orderTaken();
+        
+        /*
+         * ChatGPT was used in this portion of the code to generate the Jframe window
+         * and to initialize the Swing components like JLabel.
+         */
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 500);
         setLocationRelativeTo(null);
@@ -48,11 +57,43 @@ public class OrderingUI extends JFrame {
         initComponents();
     }
 
+    /*
+     * ChatGPT was used in this entire init portion of the code to generate all
+     * swing components that were needed.
+     */
     private void initComponents() {
         groupMembers = group.getCustomersName();
         groupMembersList = new JList<>(groupMembers.toArray(new String[0]));
         groupMembersList.setBorder(BorderFactory.createTitledBorder("Group Members"));
 
+        // Order Table Setup
+        String[] orderCols = {"Person", "Item", "Quantity", "Modifications", "Price"};
+        orderTableModel = new DefaultTableModel(orderCols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
+        orderTable = new JTable(orderTableModel);
+        JScrollPane orderScroll = new JScrollPane(orderTable);
+        orderScroll.setBorder(BorderFactory.createTitledBorder("Order Details"));
+
+        // Total Label
+        totalLabel = new JLabel("Total: $0.00");
+        totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 14f));
+        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPanel.add(totalLabel);
+
+        if (!placedOrder) {
+            setupOrderingView(orderScroll, totalPanel);
+        } else {
+            setupPaymentOnlyView(orderScroll, totalPanel);
+        }
+    }
+    
+    /* This is the view when the order has not been taken yet.
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void setupOrderingView(JScrollPane orderScroll, JPanel totalPanel) {
         quantityField = new JTextField("1", 5);
         modificationsField = new JTextField(10);
 
@@ -74,41 +115,25 @@ public class OrderingUI extends JFrame {
         JScrollPane menuScroll = new JScrollPane(menuTable);
         menuScroll.setBorder(BorderFactory.createTitledBorder("Menu"));
 
-        // Order Table
-        String[] orderCols = {"Person", "Item", "Quantity", "Modifications", "Price"};
-        orderTableModel = new DefaultTableModel(orderCols, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) { return false; }
-        };
-        orderTable = new JTable(orderTableModel);
-        JScrollPane orderScroll = new JScrollPane(orderTable);
-        orderScroll.setBorder(BorderFactory.createTitledBorder("Current Order"));
-
         // Buttons
         JButton addButton = new JButton("Add Order");
         addButton.addActionListener(e -> addToOrder());
 
         JButton removeButton = new JButton("Remove Order");
         removeButton.addActionListener(e -> removeFromOrder());
-        
-        JButton orderButton = new JButton("Order");
-        removeButton.addActionListener(e -> removeFromOrder());
+
+        JButton placeOrderButton = new JButton("Place Order");
+        placeOrderButton.addActionListener(e -> placeOrder());
 
         JButton payButton = new JButton("Pay");
         payButton.addActionListener(e -> processPayment());
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(placeOrderButton);
         buttonPanel.add(payButton);
 
-        // Total Label
-        totalLabel = new JLabel("Total: $0.00");
-        totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 14f));
-        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        totalPanel.add(totalLabel);
-
-        // Layout Panels
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(groupMembersList, BorderLayout.CENTER);
         leftPanel.add(inputPanel, BorderLayout.NORTH);
@@ -121,7 +146,60 @@ public class OrderingUI extends JFrame {
         add(centerSplit, BorderLayout.CENTER);
         add(totalPanel, BorderLayout.SOUTH);
     }
+    
+    /* This is the view when the order is already taken (we can now only pay)
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void setupPaymentOnlyView(JScrollPane orderScroll, JPanel totalPanel) {
+        JButton payButton = new JButton("Pay");
+        payButton.addActionListener(e -> processPayment());
 
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(payButton);
+
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.add(groupMembersList, BorderLayout.CENTER);
+        leftPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(leftPanel, BorderLayout.WEST);
+        add(orderScroll, BorderLayout.CENTER);
+        add(totalPanel, BorderLayout.SOUTH);
+
+        loadExistingOrder();
+    }
+    
+    /* This loads the existing order from the group and generate it on the view
+     * (saved order generation).
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void loadExistingOrder() {
+        double sum = 0;
+
+        for (String name : group.getCustomersName()) {
+            List<FoodData> customerOrder = group.getCustomerBill(name).getOrder();
+            for (FoodData item : customerOrder) {
+                double totalPrice = item.getPrice() * item.getQuantity();
+                orderTableModel.addRow(new Object[]{
+                    name,                  // Person
+                    item.getName(),        // Item
+                    item.getQuantity(),
+                    item.getModifications(),
+                    String.format("$%.2f", totalPrice)
+                });
+                sum += totalPrice;
+            }
+        }
+
+        totalLabel.setText(String.format("Total: $%.2f", sum));
+    }
+    
+    /*
+     * In the following functions, ChatGPT was used in only the JOptionPane message to provide some
+     * error checking.
+     */
+    
     private void loadMenuItems() {
         for (Food f : menuModel.getMenuItems()) {
             menuTableModel.addRow(new Object[]{f.getName(), f.getType().toString(), String.format("$%.2f", f.getPrice())});
@@ -148,19 +226,45 @@ public class OrderingUI extends JFrame {
         int modelRow = menuTable.convertRowIndexToModel(row);
         String itemName = (String) menuTableModel.getValueAt(modelRow, 0);
         Food f = menuModel.getItemFromMenu(itemName);
-
-        // Backend call to place order
-        controller.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
+        
+        OrderItem item = new OrderItem(person, f, quantity, modifications);
+        pendingOrder.add(item);
 
         double totalPrice = f.getPrice() * quantity;
         orderTableModel.addRow(new Object[]{person, f.getName(), quantity, modifications, String.format("$%.2f", totalPrice)});
         updateTotal();
     }
 
+    
+    private void placeOrder() {
+        if (pendingOrder.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No items to place.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        for (OrderItem item : pendingOrder) {
+        	
+            // Backend call to place order
+            controller.orderFoodFor(group.getGroupId(), item.person, item.food, item.quantity, item.modifications);
+        }
+
+        JOptionPane.showMessageDialog(this, "Order placed successfully!");
+        pendingOrder.clear();  // Clear buffer after placing
+        
+    }
+    
     private void removeFromOrder() {
         int row = orderTable.getSelectedRow();
         if (row < 0) return;
+
+        // Remove from pendingOrder buffer
+        if (row < pendingOrder.size()) {
+            pendingOrder.remove(row);
+        }
+
+        // Remove from UI table
         orderTableModel.removeRow(row);
+
         updateTotal();
     }
 
@@ -218,6 +322,21 @@ public class OrderingUI extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Payment failed.", "Error", JOptionPane.ERROR_MESSAGE);
             dispose();
+        }
+    }
+    
+    // This is a static class to hold all the details of a single row of an order
+    private static class OrderItem {
+        String person;
+        Food food;
+        int quantity;
+        String modifications;
+
+        public OrderItem(String person, Food food, int quantity, String modifications) {
+            this.person = person;
+            this.food = food;
+            this.quantity = quantity;
+            this.modifications = modifications;
         }
     }
 }

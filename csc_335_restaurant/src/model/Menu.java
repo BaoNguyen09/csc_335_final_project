@@ -22,7 +22,11 @@ public class Menu {
 		
 		
 	}
-	
+
+	/*
+	 * The function reads all menu items from a textfile in resources/MenuData.txt
+	 * and loads them into the menu.
+	 */
 	private void processMenuData() throws FileNotFoundException {
 		InputStream in = getClass().getResourceAsStream("/resources/MenuData.txt");
 		if (in == null) {
@@ -47,11 +51,14 @@ public class Menu {
 		        addMenuItem(itemName, typeVal, price);
 		    }
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 			
 	}
 	
+	/*
+	 * @pre itemName != null, type != null, price != null
+	 */
 	private void addMenuItem(String itemName, FoodType type, double price){
 		// Create the Food instance
 		Food item = new Food(itemName, type, price);
@@ -66,6 +73,9 @@ public class Menu {
 	}
 	
 	// Method to get a single Food object from the menu
+	/*
+	 * @pre foodName != null
+	 */
 	public Food getItemFromMenu(String foodName) {
 		return menu.get(foodName.toUpperCase());
 	}

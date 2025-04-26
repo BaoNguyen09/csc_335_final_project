@@ -14,16 +14,27 @@ public class Customer implements OrderFood{
 	private String name;
 	private Bill bill;
 	
+	/*
+	 * @pre name != null
+	 */
 	public Customer(String name) {
 		this.name = name;
 		this.bill = new Bill();
 	}
 	
+	/* Copy constructor
+	 * 
+	 * @pre other != null
+	 */
 	public Customer(Customer other) {
 		name = other.getName();
 		bill = other.getBill();
 	}
 	
+	/* Sets tip for the customer 
+	 * 
+	 * @pre tip != null
+	 */
 	public void tip(double tip) {
 		bill.setTip(tip);
 	}
@@ -37,7 +48,11 @@ public class Customer implements OrderFood{
 		boolean result = bill.payBill();
 		return result;
 	}
-	
+	/*
+	 * Pass along method because restaurant only stores groups and not bills.
+	 * 
+	 * @pre amount != null
+	 */
 	public void splitBill(double amount) {
 		bill.splitBill(amount);
 	}
@@ -54,6 +69,13 @@ public class Customer implements OrderFood{
 		return name;
 	}
 	
+	/*
+	 * @pre 
+	 * food != null
+	 * quantity != null
+	 * mods != null
+	 * 
+	 */
 	public boolean orderFood(Food food, int quantity, String mods) {
 		/*
 		 * the customer creates a foodData object when they order food which is then passed

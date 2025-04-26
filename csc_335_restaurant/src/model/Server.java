@@ -13,25 +13,36 @@ public class Server {
 	private ArrayList<Integer> tableNums;
 	private String name;
 	private double tips;
-	
+	/*
+  	 * @pre name != null
+  	 */
 	public Server(String name) {
 		this.tableNums = new ArrayList<Integer>();
 		this.name = name;
 		this.tips = 0.0;
 	}
 	
+	/*
+  	 * @pre other != null
+  	 */
 	public Server(Server other) {
 		tableNums = other.getTables();
 		name = other.getName();
 		tips = other.getTips();
 	}
 	
+	/*
+  	 * @pre tableNum != null
+  	 */
 	public void addTable(int tableNum) {
 		if (!tableNums.contains(tableNum)) {
 		    tableNums.add(tableNum);
 		}
 	}
 	
+	/*
+  	 * @pre tableNum != null
+  	 */
 	public void removeTable(int tableNum) {
 		if (tableNums.contains(tableNum)) {
 			tableNums.remove(Integer.valueOf(tableNum));
@@ -49,7 +60,9 @@ public class Server {
 	public double getTips() {
 		return tips;
 	}
-
+	/*
+  	 * @pre tips != null
+  	 */
 	public void addTips(double tips) {
 		if (tips > 0) this.tips += tips;
 	}

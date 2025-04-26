@@ -22,6 +22,10 @@ public class SalesUI extends JFrame implements SalesObserver {
 
     public SalesUI(Controller controller) {
         super("Sales Board");
+        /*
+         * ChatGPT was used in this this portion of the code to generate the Jframe window
+         * and to initialize the Swing components like the DefaultTableModel.
+         */
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -72,8 +76,6 @@ public class SalesUI extends JFrame implements SalesObserver {
     private void sortByQuantity() {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
-
-        // Assuming restaurant.getSalesObject() returns the Sales instance
         ArrayList<FoodData> sortedList = controller.getSalesObject().sortMostSales();
 
         // Sorting in descending order because sales returns in ascending
@@ -97,7 +99,8 @@ public class SalesUI extends JFrame implements SalesObserver {
         // Sorting in descending order
         for (int i = sortedList.size() - 1; i >= 0; i--) {
             FoodData item = sortedList.get(i);
-            double revenue = item.getPrice() * item.getQuantity();
+            double revenue = item.getPrice() * item.getQuantity();            
+          
             foodModel.addRow(new Object[]{
                 item.getName(),
                 item.getQuantity(),
@@ -115,6 +118,10 @@ public class SalesUI extends JFrame implements SalesObserver {
         // Update Top Tip Server Label
         Server topTipServer = controller.getTopTipEarner();
         if (topTipServer != null) {
+            /*
+             * ChatGPT was used in this this portion of the populate the UI using the model
+             * information.
+             */
         	topTipServerLabel.setText("Top Tip Server: " + topTipServer.getName() + 
         			" ($" + String.format("%.2f", topTipServer.getTips()) + ")");
         	

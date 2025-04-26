@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import controller.Controller;
+import model.Group;
 import model.Restaurant;
 import model.Table;
 
@@ -25,16 +26,19 @@ public class TableBox extends JPanel {
         this.tableNum = tableNum;
         this.groupId = 0;
         controller = c;
-
+        /*
+         * ChatGPT was used in this this portion of the code to generate the Jframe window
+         * and to initialize the Swing components like JLabel.
+         */
         setPreferredSize(new Dimension(120, 100));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         setLayout(new BorderLayout());
-
-        // 🔹 Fetch the table and get its capacity
+         
+        // Fetch the table and get its capacity
         Table table = controller.getTableByNumberCopy(tableNum);
         int capacity = (table != null) ? table.getMaxCapacity() : 0;
 
-        // 🔹 Display table number and capacity in the title
+        // Display table number and capacity in the title
         JLabel titleLabel = new JLabel("Table " + tableNum + " (Capacity: " + capacity + ")", SwingConstants.CENTER);
         add(titleLabel, BorderLayout.NORTH);
 
@@ -63,14 +67,18 @@ public class TableBox extends JPanel {
             groupId = 0;  // Reset groupId since no group is assigned
             String serverName = (table != null) ? table.getAssignedServerName() : "None";
 
+            /*
+             * ChatGPT was used in this this portion of the code format the infoLabel.
+             */
             infoLabel.setText("<html>Server: " + (serverName.isEmpty() ? "None" : serverName) +
                               "<br>Group: None</html>");
         } else {
             // Table is occupied
             String serverName = table.getAssignedServerName();
             groupId = table.getGroupId();
+            Group group = controller.getActiveGroups().get(groupId);
 
-            if (table.isOrderTaken()) {
+            if (group.orderTaken()) {
                 setBackground(Color.YELLOW);
             } else {
                 setBackground(Color.RED);

@@ -45,6 +45,9 @@ public class Restaurant {
     	return new HashMap<Integer, Table>(tableMap);
     }
 
+    /*
+	 * @pre tableNum != null
+	 */
     public Table getTableByNumberCopy(int tableNum) {
         Table original = tableMap.get(tableNum);
         if (original != null) {
@@ -66,6 +69,9 @@ public class Restaurant {
     } 
     
 
+    /*
+	 * @pre customerNames != null
+	 */
     public int addGroup(List<String> customerNames) {
         Group group = new Group();
         for (String name : customerNames) {
@@ -77,7 +83,9 @@ public class Restaurant {
         return group.getGroupId();
     }
 
-
+    /*
+	 * @pre groupId != null, tableNum != null
+	 */
 	public void assignTable(int groupId, int tableNum) {
     	Group group = waitlist.getOrDefault(groupId, null);
         Table table = tableMap.getOrDefault(tableNum, null);
@@ -97,6 +105,9 @@ public class Restaurant {
     	return new HashMap<String, Server>(serverMap);
     }
 
+    /*
+	 * @pre name != null
+	 */
     public boolean addServer(String name) {
     	if (!serverMap.containsKey(name)) {
     		Server newServer = new Server(name);
@@ -114,6 +125,9 @@ public class Restaurant {
         return new Server(server); // add copy constructor for Server
     }
 
+    /*
+	 * @pre serverName != null, tableNum != null
+	 */
     public boolean assignServerToTable(String serverName, int tableNum) {
         Server server = serverMap.getOrDefault(serverName, null);
         Table table = getTableByNumber(tableNum);
@@ -126,6 +140,9 @@ public class Restaurant {
         return false;
     }
     
+    /*
+	 * @pre serverName != null, tableNum != null
+	 */
     public boolean removeServerFromTable(String serverName, int tableNum) {
         Server server = serverMap.getOrDefault(serverName, null);
         Table table = getTableByNumber(tableNum);
@@ -139,17 +156,24 @@ public class Restaurant {
     }
 
     // --------------------- Order & Billing ---------------------
-
+    
+    /*
+	 * @pre groupId != null, customerName != null, food != null, qty != null, mods != null
+	 */
     public boolean orderFoodFor(int groupId, String customerName, Food food, int qty, String mods) {
         Group g = getGroupById(groupId);
         if (g != null && !g.onWaitlist()) {
             g.placeOrder(customerName, food, qty, mods);
+            notifyUpdateTable();
             return true;
         }
         return false;
     }
 
-    public boolean addTipFor(int groupId, String customerName, double amount) {
+
+	/*
+	 * @pre groupId != null, customerName != null, amount != null
+	 */    public boolean addTipFor(int groupId, String customerName, double amount) {
     	Group g = getGroupById(groupId);
         if (g != null && !g.onWaitlist()) {
             g.addTip(customerName, amount);
@@ -158,6 +182,9 @@ public class Restaurant {
         return false;
     }
 
+    /*
+	 * @pre groupId != null, name != null
+	 */
     public boolean payBillFor(int groupId, String name) {
         Group g = getGroupById(groupId);
         if ( g != null && g.payBill(name) && !g.onWaitlist()) {
@@ -170,6 +197,9 @@ public class Restaurant {
         return false;
     }
 
+    /*
+	 * @pre groupId != null
+	 */
     public boolean splitAndPayBillEvenly(int groupId) {
     	Group g = getGroupById(groupId);
         if (g != null && !g.onWaitlist()) {
@@ -187,6 +217,9 @@ public class Restaurant {
         return false;
     }
 
+    /*
+	 * @pre tableNum != null
+	 */
     public boolean closeGroupOrder(int tableNum) {
         Table t = getTableByNumber(tableNum);
         if (t != null && t.isOccupied()) {
@@ -209,6 +242,9 @@ public class Restaurant {
 
     // --------------------- Sales Reporting ---------------------
 
+    /*
+	 * @pre onserver != null
+	 */
     public void registerSalesObserver(SalesObserver observer) {
         this.sales.addObserver(observer);
     }
@@ -230,6 +266,7 @@ public class Restaurant {
     }
 
     // --------------------- Helpers ---------------------
+
 
     private Table getTableByNumber(int tableNum) {
         return tableMap.getOrDefault(tableNum, null);
@@ -287,11 +324,16 @@ public class Restaurant {
     
 
     // --------------------- Observer Methods ---------------------
-
+    /*
+	 * @pre o != null
+	 */
     public void addRestaurantObserver(RestaurantObserver o) {
     	this.rObservers.add(o);
     }
     
+    /*
+  	 * @pre o != null
+  	 */
     public void removeRestaurantObserver(RestaurantObserver o) {
     	this.rObservers.remove(o);
     }
@@ -314,13 +356,17 @@ public class Restaurant {
     	}
     }
 
-    
+    /*
+  	 * @pre groupNum != null tableNum != null
+  	 */
     private void notifyAddGroupTable(int groupNum, int tableNum) {
     	for (RestaurantObserver o : this.rObservers) {
     		o.assignGroupEvent(groupNum, tableNum);
     	}
     }
-    
+    /*
+  	 * @pre serverName != null tableNum != null
+  	 */
     private void notifyAddServerTable(String serverName, int tableNum) {
     	for (RestaurantObserver o : this.rObservers) {
     		o.assignServerEvent(serverName, tableNum);

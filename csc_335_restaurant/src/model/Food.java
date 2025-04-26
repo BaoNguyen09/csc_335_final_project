@@ -15,6 +15,9 @@ public class Food {
 	private FoodType TYPE;
 	private double price;
 
+	/*
+	 * @pre name != null, type != null, price != null
+	 */
 	public Food(String name, FoodType type, double price) {
 		this.name = name;
 		this.TYPE = type;
@@ -22,6 +25,9 @@ public class Food {
 	}
 
 	// copy contructor for FoodData
+	/*
+	 * @pre food != null
+	 */
 	public Food(Food food) {
 		this.name = food.getName();
 		this.TYPE = food.getType();
@@ -51,6 +57,9 @@ public class Food {
 	}
 
 
+	/*
+	 * @pre obj != null
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

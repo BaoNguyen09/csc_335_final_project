@@ -16,6 +16,9 @@ public class FoodData extends Food{
 	private int quantity;
 	private String modifications;
 	
+	/*
+	 * @pre name != null, type != null, price != null, quantity != null, modifications != null
+	 */
 	public FoodData(String name, FoodType type, double price, int quantity, String modifications) {
 		super(name, type, price);
 		this.quantity = quantity;
@@ -23,12 +26,18 @@ public class FoodData extends Food{
 	}
 	
 	//copy constructor for FoodData
+	/*
+	 * @pre food != null
+	 */
 	public FoodData(FoodData food) {
 		super(food.getName(), food.getType(), food.getPrice());
 		this.quantity = food.getQuantity();
 		this.modifications = food.getModifications();
 	}
 	
+	/*
+	 * @pre food != null, qty != null, mods != null
+	 */
 	public FoodData(Food food, int qty, String mods) {
 		super(food.getName(), food.getType(), food.getPrice());
 		this.quantity = qty;
@@ -43,10 +52,16 @@ public class FoodData extends Food{
 		return this.modifications;
 	}
 
+	/*
+	 * @pre q != null
+	 */
 	public void setQuantity(int q) {
 		this.quantity = q;
 	}
 
+	/*
+	 * @pre m != null
+	 */
 	public void setModifications(String m) {
 		this.modifications = m;
 	}
