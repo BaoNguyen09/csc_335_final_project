@@ -77,19 +77,19 @@ The Model holds the core business logic and data structures:
 2️⃣ View (view package)
 
 Implements the UI using Java Swing:
-	•	RestaurantUI.java: The main GUI window that shows the restaurant tables and calls the other views.
-	•	OrderingUI.java: Allows servers to take and customize orders.
-	•	SalesUI.java: Displays sales statistics with sortable tables.
-	•	TableBox.java: represents the tables in the restaurantUI
- 	• View.java: Support UI layout and interactions.
+	- `RestaurantUI.java`: The main GUI window that shows the restaurant tables and calls the other views.
+	- `OrderingUI.java`: Allows servers to take and customize orders.
+	- `SalesUI.java`: Displays sales statistics with sortable tables.
+	- `TableBox.java`: represents the tables in the restaurantUI
+ 	- `View.java`: Support UI layout and interactions.
 
 3️⃣ Test (test package)
 
 Contains unit tests for core components:
-	•	SalesTests.java: Validates revenue and quantity-based sorting logic.
-	•	Other test classes: BillTests.java, CustomerTests.java, FoodTests.java, MenuTests.java, etc., ensure correctness of each module.
-	•	Tests are written using JUnit and test functionality independently of the UI.
- 	•	Make sure to have Junit 5
+	- `SalesTests.java`: Validates revenue and quantity-based sorting logic.
+	- Other test classes: BillTests.java, CustomerTests.java, FoodTests.java, MenuTests.java, etc., ensure correctness of each module.
+	- Tests are written using JUnit and test functionality independently of the UI.
+ 	- Make sure to have Junit 5
 
 ⸻
 
