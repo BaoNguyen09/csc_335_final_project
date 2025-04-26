@@ -25,9 +25,9 @@ be tracked throughout their shift
 the cost per item * the number of items sold 
 - Determine the server who earned the most from tips.  
 ## Ideas to Increase Complexity: 
-- Implement a high-quality GUI using the OBSERVER pattern.  
-- Add additional functionality to the backend.  
-- Do more data analysis from the perspective of the restaurant owner – e.g. # of people, 
+- [x] Implement a high-quality GUI using the OBSERVER pattern.  
+- [ ] Add additional functionality to the backend.  
+- [ ] Do more data analysis from the perspective of the restaurant owner – e.g. # of people, 
 busiest times, etc.
 
 ---
