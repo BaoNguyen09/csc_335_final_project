@@ -198,7 +198,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             if (table.isOccupied()) {
                 // Always open OrderingUI, it will handle whether to take order or pay
             	int groupId = selected.getGroupId();
-                OrderingUI orderFrame = new OrderingUI(restaurant, controller, groupId);
+                OrderingUI orderFrame = new OrderingUI(restaurant, controller, groupId, tableNum);
                 orderFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 orderFrame.setVisible(true);
             } else {

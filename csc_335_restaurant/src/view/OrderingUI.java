@@ -19,7 +19,7 @@ import java.util.List;
 
 public class OrderingUI extends JFrame {
     private Restaurant restaurant;
-    private Table table;
+    private int tableNum;
     private Group group;
     private Menu menuModel;
 
@@ -34,10 +34,11 @@ public class OrderingUI extends JFrame {
 
     private List<String> groupMembers;
 
-    public OrderingUI(Restaurant restaurant, Controller controller, int groupId) {
+    public OrderingUI(Restaurant restaurant, Controller controller, int groupId, int tableNum) {
         super("Ordering System - Group " + groupId);
         this.restaurant = restaurant;
         this.group = restaurant.getActiveGroups().get(groupId);
+        this.tableNum = tableNum;
         this.menuModel = restaurant.getMenu();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -200,7 +201,7 @@ public class OrderingUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Invalid tip entered. Skipping tip.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
 
-            restaurant.closeGroupOrder(table.getTableNum());
+            restaurant.closeGroupOrder(tableNum);
             JOptionPane.showMessageDialog(this, "Payment completed. Table cleared!");
             dispose();
         } else {
