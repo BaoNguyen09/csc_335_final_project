@@ -192,15 +192,15 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         if (selected != null) {
             int tableNum = selected.getTableNum();
             Table table = controller.getTableByNumberCopy(tableNum);
-
-            if (table.isOccupied()) {
+            String server = table.getAssignedServerName();
+            if (table.isOccupied() && server != "") {
                 // Always open OrderingUI, it will handle whether to take order or pay
             	int groupId = selected.getGroupId();
                 OrderingUI orderFrame = new OrderingUI(controller, groupId, tableNum);
                 orderFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 orderFrame.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Table is not occupied.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Table is not occupied or doesn't have a server.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Select a table first.", "Warning", JOptionPane.WARNING_MESSAGE);
