@@ -68,11 +68,11 @@ The system is organized into three primary packages: model, view, and test, foll
 1️⃣ Model (model package)
 
 The Model holds the core business logic and data structures:
-	•	Restaurant, Server, Group, Table: Represent the real-world restaurant system.
-	•	Menu, Food, FoodData, FoodType: Represent menu items and customer orders.
-	•	Bill: Manages food orders and bill processing.
-	•	Sales: Tracks quantity sold and revenue by item, and notifies views via the Observer pattern.
-	•	Observer interfaces: RestaurantObserver, SalesObserver.
+	- Restaurant, Server, Group, Table: Represent the real-world restaurant system.
+	- Menu, Food, FoodData, FoodType: Represent menu items and customer orders.
+	- Bill: Manages food orders and bill processing.
+	- Sales: Tracks quantity sold and revenue by item, and notifies views via the Observer pattern.
+	- Observer interfaces: RestaurantObserver, SalesObserver.
 
 2️⃣ View (view package)
 
