@@ -164,12 +164,14 @@ public class Restaurant {
         Group g = getGroupById(groupId);
         if (g != null && !g.onWaitlist()) {
             g.placeOrder(customerName, food, qty, mods);
+            notifyUpdateTable();
             return true;
         }
         return false;
     }
 
-    /*
+
+	/*
 	 * @pre groupId != null, customerName != null, amount != null
 	 */    public boolean addTipFor(int groupId, String customerName, double amount) {
     	Group g = getGroupById(groupId);

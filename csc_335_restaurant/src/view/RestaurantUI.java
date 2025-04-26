@@ -78,7 +78,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         JButton assignGroupBtn = new JButton("Assign Group");
         assignGroupBtn.addActionListener(e -> assignGroup());
 
-        JButton takeOrderBtn = new JButton("Take Order");
+        JButton takeOrderBtn = new JButton("Take/Pay Order");
         takeOrderBtn.addActionListener(e -> takeOrder());
 
         JButton salesBoardBtn = new JButton("Sales Board");

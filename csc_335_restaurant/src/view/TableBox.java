@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import controller.Controller;
+import model.Group;
 import model.Restaurant;
 import model.Table;
 
@@ -75,8 +76,9 @@ public class TableBox extends JPanel {
             // Table is occupied
             String serverName = table.getAssignedServerName();
             groupId = table.getGroupId();
+            Group group = controller.getActiveGroups().get(groupId);
 
-            if (table.isOrderTaken()) {
+            if (group.orderTaken()) {
                 setBackground(Color.YELLOW);
             } else {
                 setBackground(Color.RED);

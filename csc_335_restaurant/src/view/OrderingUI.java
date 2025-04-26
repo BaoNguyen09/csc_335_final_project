@@ -44,7 +44,7 @@ public class OrderingUI extends JFrame {
         this.tableNum = tableNum;
         this.menuModel = controller.getMenu();
         // This is so that we can trigger a different view 
-        placedOrder = false;
+        placedOrder = group.orderTaken();
         
         /*
          * ChatGPT was used in this portion of the code to generate the Jframe window
@@ -57,15 +57,43 @@ public class OrderingUI extends JFrame {
         initComponents();
     }
 
+    /*
+     * ChatGPT was used in this entire init portion of the code to generate all
+     * swing components that were needed.
+     */
     private void initComponents() {
-    	/*
-         * ChatGPT was used in this entire init portion of the code to generate all
-         * swing components that were needed and the design of the GUI.
-         */
         groupMembers = group.getCustomersName();
         groupMembersList = new JList<>(groupMembers.toArray(new String[0]));
         groupMembersList.setBorder(BorderFactory.createTitledBorder("Group Members"));
 
+        // Order Table Setup
+        String[] orderCols = {"Person", "Item", "Quantity", "Modifications", "Price"};
+        orderTableModel = new DefaultTableModel(orderCols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
+        orderTable = new JTable(orderTableModel);
+        JScrollPane orderScroll = new JScrollPane(orderTable);
+        orderScroll.setBorder(BorderFactory.createTitledBorder("Order Details"));
+
+        // Total Label
+        totalLabel = new JLabel("Total: $0.00");
+        totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 14f));
+        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPanel.add(totalLabel);
+
+        if (!placedOrder) {
+            setupOrderingView(orderScroll, totalPanel);
+        } else {
+            setupPaymentOnlyView(orderScroll, totalPanel);
+        }
+    }
+    
+    /* This is the view when the order has not been taken yet.
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void setupOrderingView(JScrollPane orderScroll, JPanel totalPanel) {
         quantityField = new JTextField("1", 5);
         modificationsField = new JTextField(10);
 
@@ -87,16 +115,6 @@ public class OrderingUI extends JFrame {
         JScrollPane menuScroll = new JScrollPane(menuTable);
         menuScroll.setBorder(BorderFactory.createTitledBorder("Menu"));
 
-        // Order Table
-        String[] orderCols = {"Person", "Item", "Quantity", "Modifications", "Price"};
-        orderTableModel = new DefaultTableModel(orderCols, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) { return false; }
-        };
-        orderTable = new JTable(orderTableModel);
-        JScrollPane orderScroll = new JScrollPane(orderTable);
-        orderScroll.setBorder(BorderFactory.createTitledBorder("Current Order"));
-
         // Buttons
         JButton addButton = new JButton("Add Order");
         addButton.addActionListener(e -> addToOrder());
@@ -104,27 +122,18 @@ public class OrderingUI extends JFrame {
         JButton removeButton = new JButton("Remove Order");
         removeButton.addActionListener(e -> removeFromOrder());
 
-        JButton payButton = new JButton("Pay");
-        payButton.addActionListener(e -> processPayment());
-        
         JButton placeOrderButton = new JButton("Place Order");
         placeOrderButton.addActionListener(e -> placeOrder());
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JButton payButton = new JButton("Pay");
+        payButton.addActionListener(e -> processPayment());
+
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
-        buttonPanel.add(payButton);
         buttonPanel.add(placeOrderButton);
+        buttonPanel.add(payButton);
 
-
-
-        // Total Label
-        totalLabel = new JLabel("Total: $0.00");
-        totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 14f));
-        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        totalPanel.add(totalLabel);
-
-        // Layout Panels
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(groupMembersList, BorderLayout.CENTER);
         leftPanel.add(inputPanel, BorderLayout.NORTH);
@@ -136,6 +145,54 @@ public class OrderingUI extends JFrame {
         add(leftPanel, BorderLayout.WEST);
         add(centerSplit, BorderLayout.CENTER);
         add(totalPanel, BorderLayout.SOUTH);
+    }
+    
+    /* This is the view when the order is already taken (we can now only pay)
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void setupPaymentOnlyView(JScrollPane orderScroll, JPanel totalPanel) {
+        JButton payButton = new JButton("Pay");
+        payButton.addActionListener(e -> processPayment());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(payButton);
+
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.add(groupMembersList, BorderLayout.CENTER);
+        leftPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(leftPanel, BorderLayout.WEST);
+        add(orderScroll, BorderLayout.CENTER);
+        add(totalPanel, BorderLayout.SOUTH);
+
+        loadExistingOrder();
+    }
+    
+    /* This loads the existing order from the group and generate it on the view
+     * (saved order generation).
+     * 
+     * ChatGPT was used in this portion to generate view.
+     */
+    private void loadExistingOrder() {
+        double sum = 0;
+
+        for (String name : group.getCustomersName()) {
+            List<FoodData> customerOrder = group.getCustomerBill(name).getOrder();
+            for (FoodData item : customerOrder) {
+                double totalPrice = item.getPrice() * item.getQuantity();
+                orderTableModel.addRow(new Object[]{
+                    name,                  // Person
+                    item.getName(),        // Item
+                    item.getQuantity(),
+                    item.getModifications(),
+                    String.format("$%.2f", totalPrice)
+                });
+                sum += totalPrice;
+            }
+        }
+
+        totalLabel.setText(String.format("Total: $%.2f", sum));
     }
     
     /*
