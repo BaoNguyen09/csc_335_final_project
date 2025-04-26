@@ -3,12 +3,15 @@ package view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import controller.Controller;
 import model.Restaurant;
 import model.SalesObserver;
 import model.Server;
 import model.Food;
+import model.FoodData;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class SalesUI extends JFrame implements SalesObserver {
@@ -17,7 +20,7 @@ public class SalesUI extends JFrame implements SalesObserver {
     private Restaurant restaurant;
     private JLabel topTipServerLabel;
 
-    public SalesUI(Restaurant restaurant) {
+    public SalesUI(Restaurant restaurant, Controller controller) {
         super("Sales Board");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700, 500);
@@ -46,20 +49,20 @@ public class SalesUI extends JFrame implements SalesObserver {
         foodScroll.setBorder(BorderFactory.createTitledBorder("Food Sales"));
 
         // Sorting Buttons
-        JPanel sortPanel = new JPanel();
         JButton sortByQuantity = new JButton("Sort by Quantity Sold");
         JButton sortByRevenue = new JButton("Sort by Revenue");
 
-        sortByQuantity.addActionListener(e -> foodSalesTable.getRowSorter().toggleSortOrder(1));
-        sortByRevenue.addActionListener(e -> foodSalesTable.getRowSorter().toggleSortOrder(2));
+        sortByQuantity.addActionListener(e -> sortByQuantity());
+        sortByRevenue.addActionListener(e -> sortByRevenue());
 
-        sortPanel.add(sortByQuantity);
-        sortPanel.add(sortByRevenue);
+        JPanel sortButtonPanel = new JPanel();
+        sortButtonPanel.add(sortByQuantity);
+        sortButtonPanel.add(sortByRevenue);
 
         // Layout Setup
         JPanel foodPanel = new JPanel(new BorderLayout());
         foodPanel.add(foodScroll, BorderLayout.CENTER);
-        foodPanel.add(sortPanel, BorderLayout.SOUTH);
+        foodPanel.add(sortButtonPanel, BorderLayout.SOUTH);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(topTipServerLabel, BorderLayout.NORTH);
@@ -68,7 +71,44 @@ public class SalesUI extends JFrame implements SalesObserver {
         add(mainPanel);
     }
 
-    @Override
+    private void sortByQuantity() {
+        DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
+        foodModel.setRowCount(0);  // Clear existing rows
+
+        // Assuming restaurant.getSalesObject() returns the Sales instance
+        ArrayList<FoodData> sortedList = restaurant.getSalesObject().sortMostSales();
+
+        // Sorting in descending order because sales returns in ascending
+        for (int i = sortedList.size() - 1; i >= 0; i--) {
+            FoodData item = sortedList.get(i);
+            double revenue = item.getPrice() * item.getQuantity();
+            foodModel.addRow(new Object[]{
+                item.getName(),
+                item.getQuantity(),
+                String.format("%.2f", revenue)
+            });
+        }
+    }
+
+    private void sortByRevenue() {
+        DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
+        foodModel.setRowCount(0);  // Clear existing rows
+
+        ArrayList<FoodData> sortedList = restaurant.getSalesObject().sortOffRevenue();
+
+        // Sorting in descending order
+        for (int i = sortedList.size() - 1; i >= 0; i--) {
+            FoodData item = sortedList.get(i);
+            double revenue = item.getPrice() * item.getQuantity();
+            foodModel.addRow(new Object[]{
+                item.getName(),
+                item.getQuantity(),
+                String.format("%.2f", revenue)
+            });
+        }
+    }
+
+	@Override
     public void onSaleUpdate(double totalSales) {
         updateSalesUI();
     }
@@ -77,7 +117,9 @@ public class SalesUI extends JFrame implements SalesObserver {
         // Update Top Tip Server Label
         Server topTipServer = restaurant.getTopTipEarner();
         if (topTipServer != null) {
-            topTipServerLabel.setText("Top Tip Server: " + topTipServer.getName());
+        	topTipServerLabel.setText("Top Tip Server: " + topTipServer.getName() + 
+        			" ($" + String.format("%.2f", topTipServer.getTips()) + ")");
+        	
         } else {
             topTipServerLabel.setText("Top Tip Server: None");
         }
@@ -86,7 +128,7 @@ public class SalesUI extends JFrame implements SalesObserver {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
 
-        Map<Food, Integer> foodSales = restaurant.getSales();  // Assuming this returns the correct sales map
+        Map<Food, Integer> foodSales = restaurant.getSales(); 
 
         for (Food item : foodSales.keySet()) {
             int quantity = foodSales.get(item);

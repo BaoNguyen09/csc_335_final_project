@@ -225,8 +225,11 @@ public class Restaurant {
     }
     
     public Map<Food, Integer> getSales() {
-    	System.out.println(sales);
     	return sales.getSales();
+    }
+    
+    public Sales getSalesObject() {
+    	return new Sales(sales);
     }
 
     // --------------------- Helpers ---------------------
