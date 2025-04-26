@@ -21,20 +21,18 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     private JList<String> groupList;
     private DefaultListModel<String> groupListModel;
     private List<TableBox> tables;
-    private Restaurant restaurant;
     private Controller controller;
 
 
-    public RestaurantUI(Restaurant restaurant, Controller controller) {
+    public RestaurantUI(Controller controller) {
         super("Restaurant Floor Plan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
         setLocationRelativeTo(null);
         this.controller = controller;
-        this.restaurant = restaurant;
         
         // the restaurantUI relies on the restaurant model and data
-        restaurant.addRestaurantObserver(this);
+        this.controller.addRestaurantObserver(this);
 
         initComponents();
     }
@@ -94,7 +92,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         add(leftPanel, BorderLayout.WEST);
 
         // Center Panel for Table Display
-        Map<Integer, Table> restaurantTables = restaurant.getTables();
+        Map<Integer, Table> restaurantTables = controller.getTables();
         int tableCount = restaurantTables.size();
 
         int rows = (int) Math.ceil(tableCount / 3.0);
@@ -103,7 +101,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
 
         tables = new ArrayList<>();
         for (Integer tableNum : restaurantTables.keySet()) {
-            TableBox tableBox = new TableBox(tableNum, restaurant);
+            TableBox tableBox = new TableBox(tableNum, controller);
             tables.add(tableBox);
             centerPanel.add(tableBox);
         }
@@ -150,7 +148,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
 
         if (selected != null && serverName != null) {
             int tableNum = selected.getTableNum();
-            Table table = restaurant.getTableByNumberCopy(tableNum);
+            Table table = controller.getTableByNumberCopy(tableNum);
 
             if (table.assignServer(serverName)) {
             	controller.assignServer(serverName, tableNum);
@@ -172,8 +170,8 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             int tableNum = selected.getTableNum();
             int groupId = Integer.parseInt(groupEntry.split(" ")[1]);
 
-            Group group = restaurant.getWaitlist().get(groupId);
-            Table table = restaurant.getTableByNumberCopy(tableNum);
+            Group group = controller.getWaitlist().get(groupId);
+            Table table = controller.getTableByNumberCopy(tableNum);
 
             if (table.assignGroup(group)) {
             	// HERE need to add controller logic and observer updating
@@ -193,7 +191,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         TableBox selected = getSelectedTable();
         if (selected != null) {
             int tableNum = selected.getTableNum();
-            Table table = restaurant.getTableByNumberCopy(tableNum);
+            Table table = controller.getTableByNumberCopy(tableNum);
 
             if (table.isOccupied()) {
                 // Always open OrderingUI, it will handle whether to take order or pay
@@ -262,12 +260,12 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     */
     @Override
     public void onGroupUpdate() {
-        populateGroupList(restaurant.getWaitlist());
+        populateGroupList(controller.getWaitlist());
     }
     
     @Override
     public void onServerUpdate() {
-    	populateServerList(restaurant.getServers());
+    	populateServerList(controller.getServers());
     }
     
     @Override

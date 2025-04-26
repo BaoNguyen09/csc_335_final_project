@@ -13,7 +13,7 @@ public class View {
 		Restaurant restaurant = new Restaurant();
 		Controller controller = new Controller(restaurant);
 				
-        SwingUtilities.invokeLater(() -> new RestaurantUI(restaurant, controller).setVisible(true));
+        SwingUtilities.invokeLater(() -> new RestaurantUI(controller).setVisible(true));
 
 
 	}

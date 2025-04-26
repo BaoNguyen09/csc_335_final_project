@@ -23,6 +23,22 @@ public class Controller implements ActionListener{
     	return restaurant.getMenu();
     }
     
+    public Map<Integer, Table> getTables() {
+    	return restaurant.getTables();
+    }
+    
+    public Table getTableByNumberCopy(int tableNum) {
+    	return restaurant.getTableByNumberCopy(tableNum);
+    }
+    
+    public Map<Integer, Group> getWaitlist() {
+    	return restaurant.getWaitlist();
+    }
+    
+    public Map<String, Server> getServers() {
+    	return restaurant.getServers();
+    }
+    
     public Sales getSalesObject() {
     	return restaurant.getSalesObject();
     }
@@ -77,6 +93,10 @@ public class Controller implements ActionListener{
 	
 	public void registerSalesObserver(SalesObserver saleUI) {
 		restaurant.registerSalesObserver(saleUI);
+	}
+	
+	public void addRestaurantObserver(RestaurantObserver restaurantUI) {
+		restaurant.addRestaurantObserver(restaurantUI);
 	}
 	
 //	public void removeServer(String name, int tableNum) {
