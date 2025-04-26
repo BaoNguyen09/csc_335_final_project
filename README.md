@@ -61,7 +61,7 @@ busiest times, etc.
 
 ---
 
-🛠️ Project Design Overview
+## 🛠️ Project Design Overview
 
 The system is organized into three primary packages: model, view, and test, following the MVC (Model-View-Controller) architecture for clean separation of concerns.
 
