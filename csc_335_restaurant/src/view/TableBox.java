@@ -9,28 +9,29 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import controller.Controller;
 import model.Restaurant;
 import model.Table;
 
 public class TableBox extends JPanel {
     private int tableNum;
-    private Restaurant restaurant;
+    private Controller controller;
     private JLabel infoLabel;
 
     private boolean selected = false;
     private int groupId;
 
-    public TableBox(int tableNum, Restaurant restaurant) {
+    public TableBox(int tableNum, Controller c) {
         this.tableNum = tableNum;
         this.groupId = 0;
-        this.restaurant = restaurant;
+        controller = c;
 
         setPreferredSize(new Dimension(120, 100));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         setLayout(new BorderLayout());
 
         // 🔹 Fetch the table and get its capacity
-        Table table = restaurant.getTableByNumberCopy(tableNum);
+        Table table = controller.getTableByNumberCopy(tableNum);
         int capacity = (table != null) ? table.getMaxCapacity() : 0;
 
         // 🔹 Display table number and capacity in the title
@@ -54,7 +55,7 @@ public class TableBox extends JPanel {
     }
 
     public void refreshStatus() {
-        Table table = restaurant.getTableByNumberCopy(tableNum);
+        Table table = controller.getTableByNumberCopy(tableNum);
 
         if (table == null || !table.isOccupied()) {
             // Table doesn't exist or is vacant
