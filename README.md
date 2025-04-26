@@ -50,8 +50,7 @@ busiest times, etc.
 - If using terminal: `javac -d bin src/**/*.java`
 
 3. **Run the Application**
-From the `bin` directory:
-java view.MainUI
+- From the `bin` directory: `java view.MainUI`
 
 > Ensure `View.java` is your main class that launches the Swing interface.
 
