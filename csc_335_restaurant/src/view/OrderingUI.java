@@ -2,6 +2,7 @@ package view;
 
 import model.Menu;
 import model.Food;
+import model.FoodData;
 import model.Group;
 import model.Restaurant;
 import model.Table;
@@ -31,6 +32,8 @@ public class OrderingUI extends JFrame {
     private JList<String> groupMembersList;
     private JTextField quantityField;
     private JTextField modificationsField;
+    private List<OrderItem> pendingOrder = new ArrayList<>();
+    private boolean placedOrder;
 
     private List<String> groupMembers;
 
@@ -40,6 +43,8 @@ public class OrderingUI extends JFrame {
         this.group = controller.getActiveGroups().get(groupId);
         this.tableNum = tableNum;
         this.menuModel = controller.getMenu();
+        // This is so that we can trigger a different view 
+        placedOrder = false;
         
         /*
          * ChatGPT was used in this portion of the code to generate the Jframe window
@@ -98,17 +103,20 @@ public class OrderingUI extends JFrame {
 
         JButton removeButton = new JButton("Remove Order");
         removeButton.addActionListener(e -> removeFromOrder());
-        
-        JButton orderButton = new JButton("Order");
-        removeButton.addActionListener(e -> removeFromOrder());
 
         JButton payButton = new JButton("Pay");
         payButton.addActionListener(e -> processPayment());
+        
+        JButton placeOrderButton = new JButton("Place Order");
+        placeOrderButton.addActionListener(e -> placeOrder());
 
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
         buttonPanel.add(payButton);
+        buttonPanel.add(placeOrderButton);
+
+
 
         // Total Label
         totalLabel = new JLabel("Total: $0.00");
@@ -161,19 +169,45 @@ public class OrderingUI extends JFrame {
         int modelRow = menuTable.convertRowIndexToModel(row);
         String itemName = (String) menuTableModel.getValueAt(modelRow, 0);
         Food f = menuModel.getItemFromMenu(itemName);
-
-        // Backend call to place order
-        controller.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
+        
+        OrderItem item = new OrderItem(person, f, quantity, modifications);
+        pendingOrder.add(item);
 
         double totalPrice = f.getPrice() * quantity;
         orderTableModel.addRow(new Object[]{person, f.getName(), quantity, modifications, String.format("$%.2f", totalPrice)});
         updateTotal();
     }
 
+    
+    private void placeOrder() {
+        if (pendingOrder.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No items to place.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        for (OrderItem item : pendingOrder) {
+        	
+            // Backend call to place order
+            controller.orderFoodFor(group.getGroupId(), item.person, item.food, item.quantity, item.modifications);
+        }
+
+        JOptionPane.showMessageDialog(this, "Order placed successfully!");
+        pendingOrder.clear();  // Clear buffer after placing
+        
+    }
+    
     private void removeFromOrder() {
         int row = orderTable.getSelectedRow();
         if (row < 0) return;
+
+        // Remove from pendingOrder buffer
+        if (row < pendingOrder.size()) {
+            pendingOrder.remove(row);
+        }
+
+        // Remove from UI table
         orderTableModel.removeRow(row);
+
         updateTotal();
     }
 
@@ -231,6 +265,21 @@ public class OrderingUI extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Payment failed.", "Error", JOptionPane.ERROR_MESSAGE);
             dispose();
+        }
+    }
+    
+    // This is a static class to hold all the details of a single row of an order
+    private static class OrderItem {
+        String person;
+        Food food;
+        int quantity;
+        String modifications;
+
+        public OrderItem(String person, Food food, int quantity, String modifications) {
+            this.person = person;
+            this.food = food;
+            this.quantity = quantity;
+            this.modifications = modifications;
         }
     }
 }
