@@ -142,7 +142,7 @@ references.
 
 ⸻
 
-🔄 Use of AI-generated code
+## 🔄 Use of AI-generated code
 
 We used AI mostly when creating the GUI using swing. We did not have extensive experience with swing
 and did not have time to make the GUI pretty, so we generated this using AI. We wrote all functions
