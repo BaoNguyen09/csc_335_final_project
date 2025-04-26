@@ -83,7 +83,7 @@ Implements the UI using Java Swing:
 	- `TableBox.java`: represents the tables in the restaurantUI
  	- `View.java`: Support UI layout and interactions.
 
-3️⃣ Test (test package)
+### 3️⃣ Test (test package)
 
 Contains unit tests for core components:
 	- `SalesTests.java`: Validates revenue and quantity-based sorting logic.
