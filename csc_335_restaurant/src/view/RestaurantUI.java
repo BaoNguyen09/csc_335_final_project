@@ -271,6 +271,11 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     }
     
     @Override
+    public void onTableUpdate() {
+    	refreshAllTables();
+    }
+    
+    @Override
     public void assignServerEvent(String serverName, int tableNum) {
         for (TableBox t : tables) {
             if (t.getTableNum() == tableNum) {

@@ -110,7 +110,6 @@ public class Restaurant {
 
     public Server getTopTipEarner() {
     	List<Server> servers = new ArrayList<>(serverMap.values());
-    	System.out.println(servers);
         Server server = Collections.max(servers, Comparator.comparingDouble(s -> s.getTips()));
         return new Server(server); // add copy constructor for Server
     }
@@ -173,7 +172,6 @@ public class Restaurant {
 
     public boolean splitAndPayBillEvenly(int groupId) {
     	Group g = getGroupById(groupId);
-    	System.out.println("group: " + g);
         if (g != null && !g.onWaitlist()) {
             g.splitBillEvenly();
             for (String customerName: g.getCustomersName()) {
@@ -191,20 +189,19 @@ public class Restaurant {
 
     public boolean closeGroupOrder(int tableNum) {
         Table t = getTableByNumber(tableNum);
-        System.out.println("table 100: " + t);
         if (t != null && t.isOccupied()) {
         	Group g = getGroupById(t.getGroupId());
             Server s = serverMap.getOrDefault(t.getAssignedServerName(), null);
             if (g == null || s == null) {
             	return false;
             }
-            System.out.println(t.getGroupId());
             activeGroups.remove(t.getGroupId());
             if (g.orderTaken()) {
 		        double tips = g.getTotalTip();
 		        s.addTips(tips);
             }
             t.clearTable();
+            notifyUpdateTable();
             return true;
         }
         return false;
@@ -225,7 +222,6 @@ public class Restaurant {
     }
     
     public Map<Food, Integer> getSales() {
-    	System.out.println(sales);
     	return sales.getSales();
     }
 
@@ -307,6 +303,12 @@ public class Restaurant {
             observer.onServerUpdate();
     	}
 	}
+    
+    private void notifyUpdateTable() {
+    	for (RestaurantObserver observer: rObservers) {
+    		observer.onTableUpdate();
+    	}
+    }
 
     
     private void notifyAddGroupTable(int groupNum, int tableNum) {
