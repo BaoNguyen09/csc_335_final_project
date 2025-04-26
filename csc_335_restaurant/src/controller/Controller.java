@@ -22,6 +22,18 @@ public class Controller implements ActionListener{
     public Menu getMenu() {
     	return restaurant.getMenu();
     }
+    
+    public Sales getSalesObject() {
+    	return restaurant.getSalesObject();
+    }
+    
+    public Map<Food, Integer> getSales() {
+    	return restaurant.getSales();
+    }
+    
+    public Server getTopTipEarner() {
+    	return restaurant.getTopTipEarner();
+    }
 
     public void handleAddGroup(ArrayList<String> memberNames) {
         restaurant.addGroup(memberNames);
@@ -61,6 +73,10 @@ public class Controller implements ActionListener{
 	
 	public boolean closeGroupOrder(int tableNum) {
 		return restaurant.closeGroupOrder(tableNum);
+	}
+	
+	public void registerSalesObserver(SalesObserver saleUI) {
+		restaurant.registerSalesObserver(saleUI);
 	}
 	
 //	public void removeServer(String name, int tableNum) {
