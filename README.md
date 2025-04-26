@@ -74,7 +74,7 @@ The Model holds the core business logic and data structures:
 	- Sales: Tracks quantity sold and revenue by item, and notifies views via the Observer pattern.
 	- Observer interfaces: RestaurantObserver, SalesObserver.
 
-2️⃣ View (view package)
+### 2️⃣ View (view package)
 
 Implements the UI using Java Swing:
 	- `RestaurantUI.java`: The main GUI window that shows the restaurant tables and calls the other views.
