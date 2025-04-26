@@ -6,7 +6,11 @@
 
 package model;
 
+import java.util.Objects;
+
 public class Customer implements OrderFood{
+	
+
 	private String name;
 	private Bill bill;
 	
@@ -59,7 +63,20 @@ public class Customer implements OrderFood{
 		return bill.addFoodItem(foodData);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Customer other = (Customer) obj;
+		return Objects.equals(bill, other.bill) && Objects.equals(name, other.name);
+	}
+	
 	public String toString() {
 		return "Name: " + this.name + ", " + this.bill.toString();
 	}
+	
 }
