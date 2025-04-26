@@ -65,7 +65,7 @@ busiest times, etc.
 
 The system is organized into three primary packages: model, view, and test, following the MVC (Model-View-Controller) architecture for clean separation of concerns.
 
-1️⃣ Model (model package)
+### 1️⃣ Model (model package)
 
 The Model holds the core business logic and data structures:
 	- Restaurant, Server, Group, Table: Represent the real-world restaurant system.
