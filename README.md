@@ -43,8 +43,8 @@ busiest times, etc.
 ### Steps:
 
 1. **Clone the Repository**
-git clone
-cd csc_335_restaurant
+- `git clone https://github.com/BaoNguyen09/csc_335_restaurant.git`
+- `cd csc_335_restaurant`
 
 2. **Compile the Project**
 If using terminal:
