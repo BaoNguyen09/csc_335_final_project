@@ -47,15 +47,21 @@ public class SalesUI extends JFrame implements SalesObserver {
         foodScroll.setBorder(BorderFactory.createTitledBorder("Food Sales"));
 
         // Sorting Buttons
-        JButton sortByQuantity = new JButton("Sort by Quantity Sold");
-        JButton sortByRevenue = new JButton("Sort by Revenue");
+        JButton sortByQuantity = new JButton("Sort by Quantity Sold Descending");
+        JButton sortByRevenue = new JButton("Sort by Revenue Descending");
+        JButton sortByQuantityA = new JButton("Sort by Quantity Sold Ascending");
+        JButton sortByRevenueA = new JButton("Sort by Revenue Ascending");
 
-        sortByQuantity.addActionListener(e -> sortByQuantity());
-        sortByRevenue.addActionListener(e -> sortByRevenue());
+        sortByQuantity.addActionListener(e -> sortByQuantityD());
+        sortByRevenue.addActionListener(e -> sortByRevenueD());
+        sortByQuantityA.addActionListener(e -> sortByQuantityA());
+        sortByRevenueA.addActionListener(e -> sortByRevenueA());
 
         JPanel sortButtonPanel = new JPanel();
         sortButtonPanel.add(sortByQuantity);
         sortButtonPanel.add(sortByRevenue);
+        sortButtonPanel.add(sortByQuantityA);
+        sortButtonPanel.add(sortByRevenueA);
 
         // Layout Setup
         JPanel foodPanel = new JPanel(new BorderLayout());
@@ -69,12 +75,12 @@ public class SalesUI extends JFrame implements SalesObserver {
         add(mainPanel);
     }
 
-    private void sortByQuantity() {
+    private void sortByQuantityD() {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
 
         // Assuming restaurant.getSalesObject() returns the Sales instance
-        ArrayList<FoodData> sortedList = controller.getSalesObject().sortMostSales();
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortMostSalesDescending();
 
         // Sorting in descending order because sales returns in ascending
         for (int i = sortedList.size() - 1; i >= 0; i--) {
@@ -88,11 +94,48 @@ public class SalesUI extends JFrame implements SalesObserver {
         }
     }
 
-    private void sortByRevenue() {
+    private void sortByRevenueD() {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
 
-        ArrayList<FoodData> sortedList = controller.getSalesObject().sortOffRevenue();
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortOffRevenueDescending();
+
+        // Sorting in descending order
+        for (int i = sortedList.size() - 1; i >= 0; i--) {
+            FoodData item = sortedList.get(i);
+            double revenue = item.getPrice() * item.getQuantity();
+            foodModel.addRow(new Object[]{
+                item.getName(),
+                item.getQuantity(),
+                String.format("%.2f", revenue)
+            });
+        }
+    }
+    
+    private void sortByQuantityA() {
+        DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
+        foodModel.setRowCount(0);  // Clear existing rows
+
+        // Assuming restaurant.getSalesObject() returns the Sales instance
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortMostSalesAscending();
+
+        // Sorting in descending order because sales returns in ascending
+        for (int i = sortedList.size() - 1; i >= 0; i--) {
+            FoodData item = sortedList.get(i);
+            double revenue = item.getPrice() * item.getQuantity();
+            foodModel.addRow(new Object[]{
+                item.getName(),
+                item.getQuantity(),
+                String.format("%.2f", revenue)
+            });
+        }
+    }
+
+    private void sortByRevenueA() {
+        DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
+        foodModel.setRowCount(0);  // Clear existing rows
+
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortOffRevenueAscending();
 
         // Sorting in descending order
         for (int i = sortedList.size() - 1; i >= 0; i--) {
