@@ -1,7 +1,9 @@
 package view;
 
 import model.Menu;
+import model.Bill;
 import model.Food;
+import model.FoodData;
 import model.Group;
 import model.Restaurant;
 import model.Table;
@@ -18,11 +20,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrderingUI extends JFrame {
+    private Restaurant restaurant;
     private Controller controller;
-    private int tableNum;
+    private Table table;
+    private int groupId;
     private Group group;
     private Menu menuModel;
-
     private JTable menuTable;
     private JTable orderTable;
     private DefaultTableModel menuTableModel;
@@ -34,13 +37,13 @@ public class OrderingUI extends JFrame {
 
     private List<String> groupMembers;
 
-    public OrderingUI(Controller controller, int groupId, int tableNum) {
+    public OrderingUI(Restaurant restaurant, Controller controller, int groupId) {
         super("Ordering System - Group " + groupId);
         this.controller = controller;
-        this.group = controller.getActiveGroups().get(groupId);
-        this.tableNum = tableNum;
-        this.menuModel = controller.getMenu();
-
+        this.restaurant = restaurant;
+        this.group = restaurant.getActiveGroups().get(groupId);
+        this.menuModel = restaurant.getMenu();
+        this.groupId = groupId; 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 500);
         setLocationRelativeTo(null);
@@ -129,8 +132,17 @@ public class OrderingUI extends JFrame {
     }
 
     private void addToOrder() {
+    	// point of this is to get the group, get the customers, get their, current order, then 
+    	// load the orderTableModel with the everything they had previously ordered if the window 
+    	// is closed mid order
         String person = groupMembersList.getSelectedValue();
         int row = menuTable.getSelectedRow();
+        Group orderGroup = controller.getGroupById(groupId);
+        for (String name: orderGroup.getCustomersName()) {
+        	Bill customBill = orderGroup.getCustomerBill(name);
+        	ArrayList<FoodData> customOrder = customBill.getOrder();
+        	for (item )
+        }
         if (person == null || row < 0) {
             JOptionPane.showMessageDialog(this, "Select a person and a menu item.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -150,7 +162,7 @@ public class OrderingUI extends JFrame {
         Food f = menuModel.getItemFromMenu(itemName);
 
         // Backend call to place order
-        controller.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
+        controller.orderFood(group.getGroupId(), person, f, quantity, modifications);
 
         double totalPrice = f.getPrice() * quantity;
         orderTableModel.addRow(new Object[]{person, f.getName(), quantity, modifications, String.format("$%.2f", totalPrice)});
@@ -184,40 +196,27 @@ public class OrderingUI extends JFrame {
         boolean paymentSuccess = false;
 
         if (choice == JOptionPane.YES_OPTION) {
-            paymentSuccess = controller.splitAndPayBillEvenly(group.getGroupId());
-        } else { // pay individually
-        	for (String payer: groupMembers) {
-        		boolean paymentStatus = controller.payBillFor(group.getGroupId(), payer);
-        		try {
-        			if (!paymentStatus) throw new Exception();
-        		} catch(Exception e) {
-        			JOptionPane.showMessageDialog(this, "There's an error with payment of customer: " + payer, 
-        					"Error", JOptionPane.ERROR_MESSAGE);
-        		}
-        	}
-            paymentSuccess = true;
+            paymentSuccess = restaurant.splitAndPayBillEvenly(group.getGroupId());
+        } else {
+            String payer = groupMembers.get(0);  // Simplified: first member pays
+            paymentSuccess = restaurant.payBillFor(group.getGroupId(), payer);
         }
 
-        if (paymentSuccess) { // After paying, move to tipping
+        if (paymentSuccess) {
+            String tipInput = JOptionPane.showInputDialog(this, "Enter total tip amount:");
             try {
+                double tip = Double.parseDouble(tipInput);
                 for (String member : groupMembers) {
-                	String tipInput = JOptionPane.showInputDialog(this, String.format("Enter tip amount for %s:", member));
-                	double tip = Double.parseDouble(tipInput);
-                    boolean tippingStatus = controller.addTipFor(group.getGroupId(), member, tip);
-                    if (!tippingStatus) throw new Exception("Invalid tip entered. Skipping tip.");
+                    restaurant.addTipFor(group.getGroupId(), member, tip / groupMembers.size());
                 }
-                String paymentSummary = controller.getPaymentSummary(group.getGroupId());
-	            if (!controller.closeGroupOrder(tableNum)) throw new Exception("Can't close order. Check if this table has a valid group and server");
-	            if (paymentSummary.contains("Error")) throw new Exception(paymentSummary);
-	            JOptionPane.showMessageDialog(this, paymentSummary);
-	            dispose();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-                dispose();
+                JOptionPane.showMessageDialog(this, "Invalid tip entered. Skipping tip.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
+
+            restaurant.closeGroupOrder(table.getTableNum());
+            JOptionPane.showMessageDialog(this, "Payment completed. Table cleared!");
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Payment failed.", "Error", JOptionPane.ERROR_MESSAGE);
-            dispose();
         }
     }
-}
