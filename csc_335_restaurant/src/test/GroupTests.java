@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import model.Bill;
 import model.Customer;
 import model.Food;
 import model.FoodType;
@@ -160,6 +161,31 @@ class GroupTests {
         // Original customers unchanged
         assertEquals(12, alice.getBillCost(), 0.001);
         assertEquals(6.0, bob.getBillCost(), 0.001);
+    }
+    
+    @Test
+    void testGetCustomersName() {
+    	ArrayList<String> names = new ArrayList<>();
+    	names.add("Alice");
+    	names.add("Bob");
+    	
+    	assertEquals(group.getCustomersName(), names);
+    }
+    
+    @Test
+    void testGetCustomerBill() {
+    	assertEquals(alice.getBill(), group.getCustomerBill("Alice"));
+    }
+    
+    @Test
+    void testSplitBillEvenly() {
+    	group.splitBillEvenly();
+    	
+    	Bill aliceBill = alice.getBill();
+    	Bill bobBill = bob.getBill();
+    	
+    	assertEquals(aliceBill.getAmountPaid(), 7.5);
+    	assertEquals(bobBill.getAmountPaid(), 7.5);
     }
 
 }

@@ -99,5 +99,13 @@ public class FoodDataTests {
 		assertFalse(copyFood == foodData);
 		assertTrue(foodData.equals(copyFood));
 	}
-
+	
+	@Test 
+	void testSecondCopyConstructor() {
+		Food burger = new Food("Hamburger", FoodType.ENTREE, 4.35);
+		FoodData copyBurger = new FoodData(burger, 2, "");
+		assertEquals(copyBurger.getName(), burger.getName());
+		assertEquals(copyBurger.getType(), burger.getType());
+		assertEquals(copyBurger.getPrice(), burger.getPrice());
+	}
 }

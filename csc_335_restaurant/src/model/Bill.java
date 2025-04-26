@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /*
  * The Bill class is used to hold information on individual orders. 
@@ -29,6 +30,7 @@ public class Bill {
 	 * 
 	 * @pre other != null
 	 * */
+
 	public Bill(Bill other) {
 		this.foodCost = other.foodCost;
 		this.tip = other.tip;
@@ -111,6 +113,22 @@ public class Bill {
 		amountPaid = amount;
 		isPaid = true;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bill other = (Bill) obj;
+		return Double.doubleToLongBits(amountPaid) == Double.doubleToLongBits(other.amountPaid)
+				&& Double.doubleToLongBits(foodCost) == Double.doubleToLongBits(other.foodCost)
+				&& isPaid == other.isPaid && Objects.equals(order, other.order)
+				&& Double.doubleToLongBits(tip) == Double.doubleToLongBits(other.tip);
+	}
+	
 	
 	@Override
 	public String toString() {
