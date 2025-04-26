@@ -198,7 +198,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             if (table.isOccupied()) {
                 // Always open OrderingUI, it will handle whether to take order or pay
             	int groupId = selected.getGroupId();
-                OrderingUI orderFrame = new OrderingUI(controller, groupId, tableNum);
+                OrderingUI orderFrame = new OrderingUI(restaurant, controller, groupId);
                 orderFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 orderFrame.setVisible(true);
             } else {
@@ -253,8 +253,9 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
         }
     }
     
+    
     private void showSalesBoard() {
-        SwingUtilities.invokeLater(() -> new SalesUI(restaurant, controller).setVisible(true));
+        SwingUtilities.invokeLater(() -> new SalesUI(restaurant).setVisible(true));
     }
     
     /* RestaurantUI is an observer of the restaurant class, so whenever it is notified due to 
@@ -271,8 +272,8 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     }
     
     @Override
-    public void onTableUpdate() {
-    	refreshAllTables();
+    public void onOrderUpdate() {
+    	populateGroupList(restaurant.getActiveGroups());
     }
     
     @Override
@@ -294,6 +295,8 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
             }
         }
     }
+    
+    
 
 //	@Override
 //	public void removeServerEvent(int tableNum) {
