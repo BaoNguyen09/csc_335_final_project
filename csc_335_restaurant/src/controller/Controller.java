@@ -3,7 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 import model.*;
 
@@ -14,14 +14,6 @@ public class Controller implements ActionListener{
     public Controller(Restaurant restaurant) {
         this.restaurant = restaurant;
     }
-    
-    public Map<Integer, Group> getActiveGroups() {
-    	return restaurant.getActiveGroups();
-    }
-    
-    public Menu getMenu() {
-    	return restaurant.getMenu();
-    }
 
     public void handleAddGroup(ArrayList<String> memberNames) {
         restaurant.addGroup(memberNames);
@@ -29,8 +21,10 @@ public class Controller implements ActionListener{
 
     public void addServer(String serverName) {
 		restaurant.addServer(serverName);
+		
 	}
 
+	
 	public void assignServer(String name, int tableNum) {
 		restaurant.assignServerToTable(name, tableNum);
 	}
@@ -39,35 +33,18 @@ public class Controller implements ActionListener{
 		restaurant.assignTable(groupNum, tableNum);
 	}
 	
-	public boolean splitAndPayBillEvenly(int groupId) {
-		return restaurant.splitAndPayBillEvenly(groupId);
-	}
-	
-	public boolean orderFoodFor(int groupId, String name, Food f, int qty, String mods) {
-		return restaurant.orderFoodFor(groupId, name, f, qty, mods);
-	}
-	
-	public boolean payBillFor(int groupId, String name) {
-		return restaurant.payBillFor(groupId, name);
-	}
-	
-	public boolean addTipFor(int groupId, String name, double amount) {
-		return restaurant.addTipFor(groupId, name, amount);
-	}
-	
-	public String getPaymentSummary(int groupId) {
-		return restaurant.getPaymentSummary(groupId);
-	}
-	
-	public boolean closeGroupOrder(int tableNum) {
-		return restaurant.closeGroupOrder(tableNum);
-	}
-	
 //	public void removeServer(String name, int tableNum) {
 //		restaurant.removeServerFromTable(name, tableNum);
 //	}
 	
+	public void orderFood(int groupId, String person, Food f, int quantity, String mods) {
+		restaurant.orderFoodFor(groupId, person, f, quantity, mods);
+	}
 	
+	public Group getGroupById(int groupId) {
+		HashMap<Integer, Group> groups =  (HashMap<Integer, Group>) restaurant.getActiveGroups();
+		return groups.get(groupId);
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
