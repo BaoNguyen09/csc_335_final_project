@@ -17,20 +17,18 @@ import java.util.Map;
 public class SalesUI extends JFrame implements SalesObserver {
 
     private JTable foodSalesTable;
-    private Restaurant restaurant;
     private JLabel topTipServerLabel;
+    private Controller controller;
 
-    public SalesUI(Restaurant restaurant, Controller controller) {
+    public SalesUI(Controller controller) {
         super("Sales Board");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700, 500);
         setLocationRelativeTo(null);
 
-        this.restaurant = restaurant;
-
         topTipServerLabel = new JLabel("Top Tip Server: None");
-
-        restaurant.registerSalesObserver(this);
+        this.controller = controller;
+        this.controller.registerSalesObserver(this);
 
         initComponents();
         updateSalesUI();
@@ -76,7 +74,7 @@ public class SalesUI extends JFrame implements SalesObserver {
         foodModel.setRowCount(0);  // Clear existing rows
 
         // Assuming restaurant.getSalesObject() returns the Sales instance
-        ArrayList<FoodData> sortedList = restaurant.getSalesObject().sortMostSales();
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortMostSales();
 
         // Sorting in descending order because sales returns in ascending
         for (int i = sortedList.size() - 1; i >= 0; i--) {
@@ -94,7 +92,7 @@ public class SalesUI extends JFrame implements SalesObserver {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
 
-        ArrayList<FoodData> sortedList = restaurant.getSalesObject().sortOffRevenue();
+        ArrayList<FoodData> sortedList = controller.getSalesObject().sortOffRevenue();
 
         // Sorting in descending order
         for (int i = sortedList.size() - 1; i >= 0; i--) {
@@ -115,7 +113,7 @@ public class SalesUI extends JFrame implements SalesObserver {
 
     public void updateSalesUI() {
         // Update Top Tip Server Label
-        Server topTipServer = restaurant.getTopTipEarner();
+        Server topTipServer = controller.getTopTipEarner();
         if (topTipServer != null) {
         	topTipServerLabel.setText("Top Tip Server: " + topTipServer.getName() + 
         			" ($" + String.format("%.2f", topTipServer.getTips()) + ")");
@@ -128,7 +126,7 @@ public class SalesUI extends JFrame implements SalesObserver {
         DefaultTableModel foodModel = (DefaultTableModel) foodSalesTable.getModel();
         foodModel.setRowCount(0);  // Clear existing rows
 
-        Map<Food, Integer> foodSales = restaurant.getSales(); 
+        Map<Food, Integer> foodSales = controller.getSales(); 
 
         for (Food item : foodSales.keySet()) {
             int quantity = foodSales.get(item);
