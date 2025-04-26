@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrderingUI extends JFrame {
-    private Restaurant restaurant;
     private Controller controller;
     private int tableNum;
     private Group group;
@@ -35,13 +34,12 @@ public class OrderingUI extends JFrame {
 
     private List<String> groupMembers;
 
-    public OrderingUI(Restaurant restaurant, Controller controller, int groupId, int tableNum) {
+    public OrderingUI(Controller controller, int groupId, int tableNum) {
         super("Ordering System - Group " + groupId);
-        this.restaurant = restaurant;
         this.controller = controller;
-        this.group = restaurant.getActiveGroups().get(groupId);
+        this.group = controller.getActiveGroups().get(groupId);
         this.tableNum = tableNum;
-        this.menuModel = restaurant.getMenu();
+        this.menuModel = controller.getMenu();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 500);
@@ -152,7 +150,7 @@ public class OrderingUI extends JFrame {
         Food f = menuModel.getItemFromMenu(itemName);
 
         // Backend call to place order
-        restaurant.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
+        controller.orderFoodFor(group.getGroupId(), person, f, quantity, modifications);
 
         double totalPrice = f.getPrice() * quantity;
         orderTableModel.addRow(new Object[]{person, f.getName(), quantity, modifications, String.format("$%.2f", totalPrice)});
