@@ -238,6 +238,24 @@ public class Restaurant {
     public Menu getMenu() {
     	return menu;
     }
+    
+    public String getPaymentSummary(int groupId) {
+    	Group group = getGroupById(groupId);
+    	if (group == null) return "Error: Group not found. Can't show payment summary";
+    	String paymentSummary = "Payment Summary for Group " + group.getGroupId() + "\n";
+    	int index = 1;
+    	for (String customer: group.getCustomersName()) {
+    		Bill customerBill = group.getCustomerBill(customer);
+    		double tip = customerBill.getTip();
+    		double total = customerBill.getAmountPaid();
+    		String paymentStatus = customerBill.isPaid() ? "Paid" : "Not Paid";
+    		paymentSummary += String.format(
+                    "%d. %s\n  - Total: $%.2f, Tip: $%.2f, Status: %s\n",
+                    index, customer, total, tip, paymentStatus);
+    		index++;
+    	}
+    	return paymentSummary;
+    }
 
 //    public void showWaitlist() {
 //        waitlist.forEach(g -> System.out.println("Group " + g.getGroupId() + ": size = " + g.getGroupSize()));

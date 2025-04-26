@@ -185,27 +185,39 @@ public class OrderingUI extends JFrame {
 
         if (choice == JOptionPane.YES_OPTION) {
             paymentSuccess = restaurant.splitAndPayBillEvenly(group.getGroupId());
-        } else {
-            String payer = groupMembers.get(0);  // Simplified: first member pays
-            paymentSuccess = restaurant.payBillFor(group.getGroupId(), payer);
+        } else { // pay individually
+        	for (String payer: groupMembers) {
+        		boolean paymentStatus = restaurant.payBillFor(group.getGroupId(), payer);
+        		try {
+        			if (!paymentStatus) throw new Exception();
+        		} catch(Exception e) {
+        			JOptionPane.showMessageDialog(this, "There's an error with payment of customer: " + payer, 
+        					"Error", JOptionPane.ERROR_MESSAGE);
+        		}
+        	}
+            paymentSuccess = true;
         }
 
-        if (paymentSuccess) {
-            String tipInput = JOptionPane.showInputDialog(this, "Enter total tip amount:");
+        if (paymentSuccess) { // After paying, move to tipping
             try {
-                double tip = Double.parseDouble(tipInput);
                 for (String member : groupMembers) {
-                    restaurant.addTipFor(group.getGroupId(), member, tip / groupMembers.size());
+                	String tipInput = JOptionPane.showInputDialog(this, String.format("Enter tip amount for %s:", member));
+                	double tip = Double.parseDouble(tipInput);
+                    boolean tippingStatus = restaurant.addTipFor(group.getGroupId(), member, tip);
+                    if (!tippingStatus) throw new Exception("Invalid tip entered. Skipping tip.");
                 }
+                String paymentSummary = restaurant.getPaymentSummary(group.getGroupId());
+	            restaurant.closeGroupOrder(tableNum);
+	            if (paymentSummary.contains("Error")) throw new Exception(paymentSummary);
+	            JOptionPane.showMessageDialog(this, paymentSummary);
+	            dispose();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Invalid tip entered. Skipping tip.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+                dispose();
             }
-
-            restaurant.closeGroupOrder(tableNum);
-            JOptionPane.showMessageDialog(this, "Payment completed. Table cleared!");
-            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Payment failed.", "Error", JOptionPane.ERROR_MESSAGE);
+            dispose();
         }
     }
 }
