@@ -31,7 +31,10 @@ public class Sales {
 	    }
 	}
 	
-	
+	public Sales(Sales other) {
+		sales = new HashMap<Food, Integer>(other.sales);
+		itemRevenue = new HashMap<Food, Double>(other.itemRevenue);
+	}
 	
 	/* This method adds all the food in bill to the hashmap by checking the food name
 	 * and adding the quantity

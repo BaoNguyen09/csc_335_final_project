@@ -254,7 +254,7 @@ public class RestaurantUI extends JFrame implements RestaurantObserver{
     }
     
     private void showSalesBoard() {
-        SwingUtilities.invokeLater(() -> new SalesUI(restaurant).setVisible(true));
+        SwingUtilities.invokeLater(() -> new SalesUI(restaurant, controller).setVisible(true));
     }
     
     /* RestaurantUI is an observer of the restaurant class, so whenever it is notified due to 
