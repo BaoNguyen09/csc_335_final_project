@@ -93,7 +93,7 @@ Contains unit tests for core components:
 
 ⸻
 
-🔄 Design
+## 🔄 Design
 - MVC Architecture for modular separation.
  
 - Observer Pattern for UI updates triggered by model changes (e.g., sales updates).
