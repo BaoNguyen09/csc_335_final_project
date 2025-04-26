@@ -213,12 +213,20 @@ public class Restaurant {
         this.sales.addObserver(observer);
     }
     
-    public List<FoodData> getTopSellingItems() {
-        return sales.sortMostSales();
+    public List<FoodData> getTopSellingItemsDescending() {
+        return sales.sortMostSalesDescending();
     }
 
-    public List<FoodData> getTopMoneyMakers() {
-        return sales.sortOffRevenue();
+    public List<FoodData> getTopMoneyMakersDescending() {
+        return sales.sortOffRevenueDescending();
+    }
+    
+    public List<FoodData> getTopSellingItemsAscending() {
+        return sales.sortMostSalesAscending();
+    }
+
+    public List<FoodData> getTopMoneyMakersAscending() {
+        return sales.sortOffRevenueAscending();
     }
     
     public Map<Food, Integer> getSales() {
